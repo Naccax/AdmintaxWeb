@@ -1,0 +1,211 @@
+body {
+    background: linear-gradient(#ff0000, #000000);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url("./logo.png");
+    background-repeat: no-repeat, repeat;
+    background-color: #cccccc;
+    background-size:contain;
+    background-position: center;
+  }
+
+  div.container
+  {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 10px;        
+  }
+
+  div.grid
+  {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 10px;        
+  }
+  
+  div.container:hover
+  {
+    background-color: rgba(255, 255, 255, 1);
+  }
+  
+  div.grande:hover
+  {
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  
+  div.invisible2
+  {
+    height: 0px;
+    visibility: hidden;
+  }
+
+  tr.Neutral
+  {
+    background-color: rgb(0, 255, 0, 0.2);
+    color: black;
+  }
+  tr.filaAzul
+  {
+    background-color:  rgb(0,0,255,0.2);
+    color: black;
+  }
+  tr.filaRoja
+  {
+    background-color: rgb(255, 0, 0, 0.2);
+    color: black;
+  }
+  td.rojo
+  {
+    background-color: rgb(255,0,0,0.2);
+  }
+  
+  td.verde
+  {
+    background-color: rgb(0,255,0,0.2);
+  }
+  td.azul
+  {
+    background-color: rgb(0,0,255,0.2);
+  }
+  td.amarillo
+  {
+    background-color: rgb(255,255,0,0.2);
+  }
+  td.cian
+  {
+    background-color: rgb(0,255,255,0.2);
+  }
+
+  tr:hover
+  {
+    background-color: black;
+    color: white;
+  }
+
+  
+  tr.titulos:hover
+  {
+    background-color: black;
+    color: white;
+  }
+  
+
+
+  h3
+  {
+    text-align: left;
+    margin-bottom: 10px;
+  }
+  table
+  {
+    border-style: solid;
+    border-color: black;
+    border-radius: 5px;
+  }
+  
+  th
+  {
+    
+    border: 1px;
+    border-top-width: 2px;
+    border-style: solid;
+    border-color: white;
+    
+  }
+  td
+  {
+    border: 1px;
+    border-style: solid;
+    border-color: white;
+    width: 130px;
+  }
+  
+  table.SinBorde
+  {
+    border-style: none;
+    text-align: left;
+  }
+  tr.SinBorde
+  {
+    border-style: none;
+    text-align: left;
+  }
+  td.SinBorde
+  {
+    border-style: none;
+    text-align: left;
+  }
+  button
+  {
+    margin-bottom: 7px;
+  }
+
+  img.icono
+  {
+    height: 60px;
+    width: 90px;
+  }
+  img.icono:hover
+  {
+    height: 70px;
+    width: 100px;
+  }
+  div.btn
+  {
+    float: left;
+  }
+
+  .kms
+  {
+    width: 10px;
+  }
+
+  .dts
+  {
+    width: 60%;
+  }
+
+  tr.cat3
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.cat4 
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.cat5 
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.cat6 
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.cat7 
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.cat8 
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.cat9 
+  {
+    background-color: rgba(255, 255, 255, 1);
+    color: black;
+  }
+  tr.GF
+  {
+    background-color: rgb(255, 255, 255);
+    color: black;
+  }
+  
