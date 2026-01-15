@@ -420,6 +420,7 @@ include 'index.php';
 
   $nombresChoferes = ejecutarConsulta($sql);
 
+
 //print_r($choferes[6]['Nombre']);
 
   foreach($listarecaudaciones as $row)
@@ -868,6 +869,7 @@ include 'index.php';
     </tr>
     <tr>
       <td> Pagos electrónicos</td><td><?php echo "$ ".$pagosElecrtonicos; ?></td>
+      <td><button type="button" class="btn btn-primary" onclick="irADetalles('detallesPE')">IR A DETALLES</button></td>
     </tr>
     <tr>
       <td> Efectivo Recaudado</td><td><?php echo "$ ".$contador['Recaudado']-$pagosElecrtonicos; ?></td>
@@ -876,7 +878,7 @@ include 'index.php';
       <td> Descuentos por Pagos electrónicos: </td><td><?php echo "$ ".$desc[0][0]; ?></td>
     </tr>
     <tr>
-      <td> Gastos Variables</td><td><?php echo "$ ".$contadorGV['Liquido']*(-1)+$sumaAceites+$contador['Lavado']+$contador['Gomeria']+$contador['Otros']; ?></td>
+      <td> Gastos Variables</td><td><?php echo "$ ".$contadorGV['Liquido']*(-1)+$sumaAceites+$contador['Lavado']+$contador['Gomeria']+$contador['Otros']+$contador['Cabify']; ?></td>
       <td with="20%"><button type="button" class="btn btn-primary" onclick="toggle2(this)">MOSTRAR DETALLES</button>
     </tr>
     <tr id="mytr2" class="GF" hidden="hidden">
@@ -902,24 +904,15 @@ include 'index.php';
           }
         ?>
         <tr>
-          <td> Otros Gastos en Boletas</td><td><?php echo "$ ".$sumaAceites+$contador['Lavado']+$contador['Gomeria']+$contador['Otros']; ?></td>
-          <td><button type="button" class="btn btn-secondary" onclick="detalle('Otros')"> Detalles </button></td>
-        </tr>
-        <tr class="GF" id="Otros" hidden="hidden">
-          <td colspan="3">
-            <table class="table">
-              <tr><td> Lavado </td><td><?php echo $contador['Lavado'] ?></td></tr>
-              <tr><td> Gomería </td><td><?php echo $contador['Gomeria'] ?></td></tr>
-              <tr><td> Otros </td><td><?php echo $contador['Otros'] ?></td></tr>
-              <tr><td> Aceite </td><td><?php echo $sumaAceites ?></td></tr>
-            </table>
-          </td>
+          <td> Otros Gastos en Boletas</td><td><?php echo ($sumaAceites+$contador['Lavado']+$contador['Gomeria']+$contador['Otros']+$contador['Cabify'])*(-1); ?></td>
+          <td><button type="button" class="btn btn-secondary" onclick="irADetalles('detallesOGB')"> IR A Detalles </button></td>
         </tr>
       </table>
       
     </td>
     <tr>
       <td> Movimientos de Efectivo</td><td><?php echo "$ ".$contadorMV['Efectivo']; ?></td>
+      <td><button type="button" class="btn btn-primary" onclick="irADetalles('detallesME')">IR A DETALLES</button></td>
     </tr>
     
     <tr>
@@ -933,37 +926,43 @@ include 'index.php';
     </tr>
     <tr>
       <td> Gastos Fijos</td><td><?php echo "$ ".$contadorGF['Liquido']; ?></td>
-      <td><button type="button" class="btn btn-primary" onclick="toggle(this)">MOSTRAR DETALLES</button>
-    </td>
-    <tr id="mytr" class="GF" hidden="hidden">
-    <td colspan="3">
-      <table class="table">
-        <?php 
-        if (isset($resumenGF))
-          foreach($resumenGF as $row)
-          {
-            echo '<tr id="mytr"><td>'.$row["Tipo"].'</td><td>'.$row["Monto"].'</td></tr>';
-          }
-        ?>
-      </table>
-    </td>
+      <td><button type="button" class="btn btn-primary" onclick="irADetalles('detallesGF')">IR A DETALLES</button></td>
     </tr>
     <!--<tr>
       <td> Otros Gastos en Boletas</td><td><?php echo "$ ".$aux0; ?></td>
     </tr>-->
     <tr>
-      <td> Gastos de Aceite</td><td><?php echo "$ ".$sumaAceites; ?></td>
-    </tr>
-    <tr>
-      <td> Salarios más complementos de laudos, feriados y horas de taller</td>
+      <td> Salarios</td>
       <td><?php echo "$ ".$contador['Salario']+$contador['Laudo']+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']+$contador['LaudoNoCobrado']; ?></td>
     </tr>
     <tr>
-      <td> Viáticos (Todos)</td><td><?php echo "$ ".$contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?></td>
+      <td> Feriados</td><td><?php echo "$ ".$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']; ?></td>
+      <td with="20%"><button type="button" class="btn btn-primary" onclick="toggle(this)">MOSTRAR DETALLES</button></td>
+    </tr>
+    <tr id="mytr" class="GF" hidden="hidden">
+    <td colspan="3">
+      <table class="table">
+        <tr><td>Feriados Cobrados</td><td><?php echo $contador['FeriadoCobrado']; ?></td></tr>
+        <tr><td>Feriados No Cobrados</td><td><?php echo $contador['FeriadoNoCobrado']; ?></td></tr>
+      </table>
+    </td>
+    </tr>
+    <tr>
+      <td> Viáticos</td><td><?php echo "$ ".$contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?></td>
+      <td with="20%"><button type="button" class="btn btn-primary" onclick="toggle4(this)">MOSTRAR DETALLES</button></td>
+    </tr>
+    <tr id="mytr4" class="GF" hidden="hidden">
+    <td colspan="3">
+      <table class="table">
+        <tr><td>Viáticos Cobrados</td><td><?php echo $contador['ViaticoCobrado']; ?></td></tr>
+        <tr><td>Viáticos No Cobrados</td><td><?php echo $contador['ViaticoNoCobrado']; ?></td></tr>
+      </table>
+    </td>
     </tr>
     <tr>
       <td> Aportes Choferes </td><td><?php echo "$ ".$contador['AporteReal']; ?></td>
       <td with="20%"><button type="button" class="btn btn-primary" onclick="toggle3(this)">MOSTRAR DETALLES</button></td>
+    </tr>
     <tr id="mytr3" class="GF" hidden="hidden">
     <td colspan="3">
       <table class="table">
@@ -979,13 +978,24 @@ include 'index.php';
     </tr>
     <tr>
       <td>Combustible Contado</td><td><?php echo "$ ".$contador['GasOilPlata']; ?></td>
+      <td with="20%"><button type="button" class="btn btn-primary" onclick="detalle('combustibleCont')">MOSTRAR DETALLES</button></td>
+    </tr>
+    <tr class="GF" id='combustibleCont' hidden='hidden'>
+    <td colspan='3'>
+      <table class="table">
+        <?php foreach($combutibleTipos as $row)
+        {
+          echo "<tr><td>".$row['Tipo']."</td><td>".$row['Monto']."</td></tr>";
+        } ?>
+      </table>
+    </td>
     </tr>
     <?php if($contador['GasOilCred']>0){?>
     <tr>
       <td>Combustible Crédito</td><td><?php echo "$ ".round($contador['GasOilCred'],2); ?></td>
-      <td with="20%"><button type="button" class="btn btn-primary" onclick="detalle('combustible')">MOSTRAR DETALLES</button>
+      <td with="20%"><button type="button" class="btn btn-primary" onclick="detalle('combustibleCred')">MOSTRAR DETALLES</button>
     </tr>
-    <tr class="GF" id='combustible' hidden='hidden'><td colspan='3'>
+    <tr class="GF" id='combustibleCred' hidden='hidden'><td colspan='3'>
       <table class="table">
         <?php foreach($combutibleTipos as $row)
         {
@@ -1012,7 +1022,7 @@ include 'index.php';
 
   </div>
 
-  <div class="container text-center abs-center">
+  <div class="container text-center abs-center" id="detallesPE">
   <h3>Detalle de pagos electrónicos</h3>
   <hr>
 
@@ -1106,7 +1116,7 @@ include 'index.php';
 
   </div>
 
-  <div class="container text-center abs-center">
+  <div class="container text-center abs-center" id="detallesOGB">
   <h2>Detalle de Otros Gastos en Boletas</h1>
   <hr>
 
@@ -1124,7 +1134,7 @@ include 'index.php';
     echo "<tr>";
     echo "<td></td>";
     echo '<td colspan="1">';
-    echo "Lavado";
+    echo "Lavados";
     echo "</td>";
     echo "<td>";
     echo $contador["Lavado"];
@@ -1136,11 +1146,24 @@ include 'index.php';
     echo "<tr>";
     echo "<td></td>";
     echo '<td colspan="1">';
+    echo "Aceite Contado:";
+    echo "</td>";
+    echo "<td>";
+    echo $contador["AceiteCont"];
+    $aux=$aux+$contador["AceiteCont"];
+    echo "</td>";
+    echo "</tr>";
+
+
+
+    echo "<tr>";
+    echo "<td></td>";
+    echo '<td colspan="1">';
     echo "Aceite Cr&eacute;dito:";
     echo "</td>";
     echo "<td>";
     echo $contador["AceiteCred"];
-    $aux=$contador["AceiteCred"];
+    $aux=$aux+$contador["AceiteCred"];
     echo "</td>";
     echo "</tr>";
 
@@ -1148,7 +1171,7 @@ include 'index.php';
     echo "<tr>";
     echo "<td></td>";
     echo '<td colspan="1">';
-    echo "Gomería";
+    echo "Gomerías";
     echo "</td>";
     echo "<td>";
     echo $contador["Gomeria"];
@@ -1159,7 +1182,7 @@ include 'index.php';
     echo "<tr>";
     echo "<td></td>";
     echo '<td colspan="1">';
-    echo "Recarga Cabify";
+    echo "Recargas Cabify";
     echo "</td>";
     echo "<td>";
     echo $contador["Cabify"];
@@ -1204,7 +1227,7 @@ include 'index.php';
   </div>
 
 
-  <div class="container text-center abs-center">
+  <div class="container text-center abs-center" id="detallesME">
   <h2>Efectivo retirado o depositado</h1>
   <hr>
 
@@ -1246,7 +1269,7 @@ include 'index.php';
 
 
   
-  <div class="container text-center abs-center">
+  <div class="container text-center abs-center" id="detallesGF">
   <h2>Detalle de Gastos Fijos</h1>
   <hr>
 
@@ -1417,6 +1440,19 @@ include 'index.php';
     }
   }
 
+  let toggle4 = button => {
+    let element = document.getElementById("mytr4");
+    let hidden = element.getAttribute("hidden");
+
+    if (hidden) {
+       element.removeAttribute("hidden");
+       button.innerText = "OCULTAR";
+    } else {
+       element.setAttribute("hidden", "hidden");
+       button.innerText = "MOSTRAR DETALLES";
+    }
+  }
+
   function detalle (id)
   {
     let element = document.getElementById(id);
@@ -1429,5 +1465,12 @@ include 'index.php';
       element.setAttribute("hidden", "hidden");
       //button.innerText = "MOSTRAR DETALLES";
     }
+  }
+
+  function irADetalles(id) 
+  {
+    document.getElementById(id).scrollIntoView({
+      behavior: "smooth"
+    });
   }
 </script>
