@@ -1,15 +1,12 @@
 <?php
-//UPDATE `recaudaciones` SET `Observaciones` = 'Hora de Carga' WHERE `recaudaciones`.`id` = 3318;
 include 'funciones.php';
 session_start();
-//print_r($_SESSION);
+//session_start() crea la variable de sesion $_SESSION, que es como un hashmap, 
+//donde se pueden guardar datos que se mantendrán a lo largo de la sesión del usuario.
 if(isset($_SESSION['usuario']))
 {
-    //echo"Usuario: " . $_SESSION['usuario'];
-    //$todosLosMoviles
     $consulta="SELECT * FROM `movil` WHERE `NumRut`='".$_SESSION['empresa']."';";
     $todosLosMoviles=ejecutarConsulta($consulta);
-    //print_r($todosLosMoviles);
     
     $consulta="SELECT * FROM `chofer` WHERE RUT='".$_SESSION['empresa']."'";
     $todosLosChoferes=ejecutarConsulta($consulta);
@@ -19,14 +16,10 @@ if(isset($_SESSION['usuario']))
     {
       $choferes[$chofer['id']]=$chofer;
     }
-    //print_r($todosLosChoferes);
 
     
     $consulta='SELECT * FROM `empresa` WHERE `NumeroDeRUT`="'.$_SESSION['empresa'].'"';
     $EmpresaDatos = ejecutarConsulta($consulta);
-    
-    //print_r($EmpresaDatos);
-
 
 }else
 {
@@ -42,7 +35,6 @@ if(isset($_GET['salir']))
 $empresaID=$EmpresaDatos[0]["id"];
 
 $sql = 'SELECT * FROM `chofer` WHERE RUT="'.$EmpresaDatos[0]["NumeroDeRUT"].'"';
-//echo "$sql";
 $ListaDeChoferes=ejecutarConsulta($sql);
 
 ?>
@@ -259,8 +251,7 @@ $ListaDeChoferes=ejecutarConsulta($sql);
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-<script >
-</script>
+
 </body>
 
 </html>
