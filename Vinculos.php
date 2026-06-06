@@ -1,7 +1,5 @@
 <?php
 include 'index.php';
-
-
 ?>
 <br>
 

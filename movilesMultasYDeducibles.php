@@ -2,10 +2,7 @@
 <?php 
 include('index.php'); 
 
-//print_r($_POST);
-
-
-$consulta="SELECT * FROM movil";//moviles
+$consulta="SELECT * FROM movil";
 $movilestemp = ejecutarConsulta($consulta);
 
 function actualizarChoferes()
@@ -18,6 +15,7 @@ function actualizarChoferes()
         Insert($consulta);
     }    
 }
+
 function actualizarMoviles()
 {
     $consulta="SELECT COUNT(multas.id) AS cant, multas.movil as movil, multas.MovilId FROM multas WHERE multas.Estado='Activa' GROUP BY multas.MovilId;";
@@ -107,8 +105,6 @@ else
 
 $todosLosMoviles=ejecutarConsulta($consulta);
 
-//print_r($_POST);
-
 if (isset($_POST["Más_detalles"])) {
     $_SESSION["mas"] = !isset($_SESSION["mas"]) || true;
 }
@@ -139,9 +135,6 @@ if (isset($_POST["Ver_Entregas"]))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>

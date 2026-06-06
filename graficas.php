@@ -17,35 +17,36 @@ $ides = str_replace(",)", ")", $ides);
 
 $movil=$ides;
 
-
-
-$inicio = date("Y-m-01");
-$fin = date("Y-m-t");
-
-if(isset($_POST["desde"]))
-{
-  $inicio = $_POST["desde"];
-  $fin = $_POST["hasta"];
+if (isset($_POST['desde'], $_POST['hasta'])) {
+    $_SESSION['desde'] = $_POST['desde'];
+    $_SESSION['hasta'] = $_POST['hasta'];
 }
+
+if (!isset($_SESSION['desde'])) {
+    $_SESSION['desde'] = date('Y-m-01');
+}
+
+if (!isset($_SESSION['hasta'])) {
+    $_SESSION['hasta'] = date('Y-m-t');
+}
+
+$inicio = $_SESSION['desde'];
+$fin = $_SESSION['hasta'];
 
 $consulta="SELECT recaudaciones.Movil,round((sum(recaudaciones.Recaudado)/sum(recaudaciones.Kilometros)),2) as km,sum(recaudaciones.Recaudado) as Recaudado,recaudaciones.MovilId,Movil.NumRut from recaudaciones,Movil WHERE HoraEntrada>='$inicio 00:00:00' and  HoraEntrada <= '$fin 23:59:00' and Movil.NumRut='".$_SESSION['empresa']."' AND Movil.id=recaudaciones.MovilId GROUP by recaudaciones.MovilId;";
 $dt=ejecutarConsulta($consulta);
 
 
 $consulta="SELECT recaudaciones.Chofer,chofer.RUT,sum(recaudaciones.Recaudado) as Recaudado,recaudaciones.Chofer,chofer.Nombre from recaudaciones,Movil,chofer WHERE HoraEntrada>='$inicio 00:00:00' and  HoraEntrada <= '$fin 23:59:00' AND recaudaciones.MovilId=movil.Id and movil.NumRut='".$_SESSION['empresa']."' and chofer.id=recaudaciones.Chofer GROUP by recaudaciones.Chofer;";
-//echo $consulta;
 $dtChoferes=ejecutarConsulta($consulta);
-//print_r($dt);
 
 
 $sql = "Select * from recaudaciones where ((HoraEntrada>='$inicio 00:00:00' and  HoraEntrada <= '$fin 23:59:00') or (fecha>='$inicio 00:00:00' and  fecha <= '$fin 23:59:00')) and recaudaciones.MovilId in $ides order by recaudaciones.HoraEntrada;";
 $sql2 = str_replace("from recaudaciones", "from recaudaciones,bauchers", $sql);
 $sql2 = str_replace("where", "where recaudaciones.id=bauchers.Recaudacion_Id and ", $sql2);
 $sql2 = str_replace("*", "round(sum(bauchers.Descuentos),2)", $sql2);
-//echo "$sql" . "<br>";
 $movimientos=ejecutarConsulta($sql);
 $desc=ejecutarConsulta($sql2);
-//print_r($movimientos);
 
 
 $contador['id']=0;
@@ -396,13 +397,9 @@ foreach($movimientos as $row)
   }
 }
 
-//print_r($listaDeTipos);
 
 foreach($listarecaudaciones as $row)
 {
-    
-  //$contador['id']=$contador['']+$row['id'];
-  //$contador['fecha']=$contador['']+$row[''];
   if(($contador['KmEntrada']==0) or ($contador['KmEntrada']>$row['KmEntrada']))
   {
     $contador['KmEntrada']=$row['KmEntrada'];
@@ -418,12 +415,6 @@ foreach($listarecaudaciones as $row)
     $listaDeKm[]=$row['KmSalida'];
   }
 
-  //$contador['Chofer']=$contador['']+$row[''];
-  //$contador['Movil']=$contador['']+$row[''];
-  //$contador['HoraEntrada']=$contador['']+$row[''];
-  //$contador['HoraSalida']=$contador['']+$row[''];
-  //$contador['Sueldo']=$contador['']+$row[''];
-  //$contador['BPS']=$contador['']+$row[''];
   $contador['Recaudado']=$contador['Recaudado']+$row['Recaudado'];
   $contador['Salario']=$contador['Salario']+$row['Salario'];
   $contador['Laudo']=$contador['Laudo']+$row['Laudo'];
@@ -457,7 +448,6 @@ foreach($listarecaudaciones as $row)
   $contador['Efectivo']=$contador['Efectivo']+$row['Efectivo'];
   $contador['Gastos']=$contador['Gastos']+$row['Gastos'];
   $contador['Liquido']=$contador['Liquido']+$row['Liquido'];
-  //$contador['Observaciones']=$contador['Observaciones']+$row['Observaciones'];
   $contador['Kilometros']=$contador['Kilometros']+$row['Kilometros'];
   $contador['OtraRetencion']=$contador['OtraRetencion']+$row['OtraRetencion'];
   $contador['AporteReal']=$contador['AporteReal']+$row['AporteReal'];
@@ -482,8 +472,8 @@ $Salarios=$Salarios+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado'];
 $Salarios=$Salarios+$contador['Salario'];
 
 if (count($listaDeKm)>0){
-$contador['KmEntrada']= min($listaDeKm);
-$contador['KmSalida']= max($listaDeKm);
+  $contador['KmEntrada']= min($listaDeKm);
+  $contador['KmSalida']= max($listaDeKm);
 }
 
 $sumaAceites=$contador['AceiteCont']+$contador['AceiteCred'];
@@ -493,9 +483,6 @@ $pagosElecrtonicos=$contador['H13Patronal']+$contador['R12Celeritas']+$contador[
 
 foreach($ListaGF as $row)
 {
-    
-  //$contadorGF['id']=$contadorGF['']+$row['id'];
-  //$contadorGF['fecha']=$contadorGF['']+$row[''];
   if(($contadorGF['KmEntrada']==0) or ($contadorGF['KmEntrada']>$row['KmEntrada']))
   {
     $contadorGF['KmEntrada']=$row['KmEntrada'];
@@ -505,12 +492,6 @@ foreach($ListaGF as $row)
     $contadorGF['KmSalida']=$row['KmSalida'];
   }
 
-  //$contadorGF['Chofer']=$contadorGF['']+$row[''];
-  //$contadorGF['Movil']=$contadorGF['']+$row[''];
-  //$contadorGF['HoraEntrada']=$contadorGF['']+$row[''];
-  //$contadorGF['HoraSalida']=$contadorGF['']+$row[''];
-  //$contadorGF['Sueldo']=$contadorGF['']+$row[''];
-  //$contadorGF['BPS']=$contadorGF['']+$row[''];
   $contadorGF['Recaudado']=$contadorGF['Recaudado']+$row['Recaudado'];
   $contadorGF['Salario']=$contadorGF['Salario']+$row['Salario'];
   $contadorGF['Laudo']=$contadorGF['Laudo']+$row['Laudo'];
@@ -540,7 +521,6 @@ foreach($ListaGF as $row)
   $contadorGF['Efectivo']=$contadorGF['Efectivo']+$row['Efectivo'];
   $contadorGF['Gastos']=$contadorGF['Gastos']+$row['Gastos'];
   $contadorGF['Liquido']=$contadorGF['Liquido']+$row['Liquido'];
-  //$contadorGF['Observaciones']=$contadorGF['Observaciones']+$row['Observaciones'];
   $contadorGF['Kilometros']=$contadorGF['Kilometros']+$row['Kilometros'];
   $contadorGF['MercPagoPersonal']=$contadorGF['MercPagoPersonal']+$row['MercPagoPersonal'];
   $contadorGF['CabifyTarjetas']=$contadorGF['CabifyTarjetas']+$row['CabifyTarjetas'];
@@ -548,129 +528,112 @@ foreach($ListaGF as $row)
   $contadorGF['AporteReal']=$contadorGF['AporteReal']+$row['AporteReal'];
 
 }
-if(isset($ListaGV))
-foreach($ListaGV as $row)
-{
-    
-  //$contadorGV['id']=$contadorGV['']+$row['id'];
-  //$contadorGV['fecha']=$contadorGV['']+$row[''];
-  if(($contadorGV['KmEntrada']==0) or ($contadorGV['KmEntrada']>$row['KmEntrada']))
-  {
-    $contadorGV['KmEntrada']=$row['KmEntrada'];
-  }
-  if($contadorGV['KmSalida']<$row['KmSalida'])
-  {
-    $contadorGV['KmSalida']=$row['KmSalida'];
-  }
 
-  //$contadorGV['Chofer']=$contadorGV['']+$row[''];
-  //$contadorGV['Movil']=$contadorGV['']+$row[''];
-  //$contadorGV['HoraEntrada']=$contadorGV['']+$row[''];
-  //$contadorGV['HoraSalida']=$contadorGV['']+$row[''];
-  //$contadorGV['Sueldo']=$contadorGV['']+$row[''];
-  //$contadorGV['BPS']=$contadorGV['']+$row[''];
-  $contadorGV['Recaudado']=$contadorGV['Recaudado']+$row['Recaudado'];
-  $contadorGV['Salario']=$contadorGV['Salario']+$row['Salario'];
-  $contadorGV['Laudo']=$contadorGV['Laudo']+$row['Laudo'];
-  $contadorGV['Comision']=$contadorGV['Comision']+$row['Comision'];
-  $contadorGV['ViaticoNoCobrado']=$contadorGV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
-  $contadorGV['ViaticoCobrado']=$contadorGV['ViaticoCobrado']+$row['ViaticoCobrado'];
-  $contadorGV['FeriadoNoCobrado']=$contadorGV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
-  $contadorGV['FeriadoCobrado']=$contadorGV['FeriadoCobrado']+$row['FeriadoCobrado'];
-  $contadorGV['AporteSalario']=$contadorGV['AporteSalario']+$row['AporteSalario'];
-  $contadorGV['AporteViatico']=$contadorGV['AporteViatico']+$row['AporteViatico'];
-  $contadorGV['AporteFeriado']=$contadorGV['AporteFeriado']+$row['AporteFeriado'];
-  $contadorGV['AporteTotales']=$contadorGV['AporteTotales']+$row['AporteTotales'];
-  $contadorGV['H13Patronal']=$contadorGV['H13Patronal']+$row['H13Patronal'];
-  $contadorGV['R12Celeritas']=$contadorGV['R12Celeritas']+$row['R12Celeritas'];
-  $contadorGV['MerPagoCeleritas']=$contadorGV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
-  $contadorGV['H13Especiales']=$contadorGV['H13Especiales']+$row['H13Especiales'];
-  $contadorGV['MercPago']=$contadorGV['MercPago']+$row['MercPago'];
-  $contadorGV['OcaCel']=$contadorGV['OcaCel']+$row['OcaCel'];
-  $contadorGV['Bits']=$contadorGV['Bits']+$row['Bits'];
-  $contadorGV['Tarjetas']=$contadorGV['Tarjetas']+$row['Tarjetas'];
-  $contadorGV['GasOilPlata']=$contadorGV['GasOilPlata']+$row['GasOilPlata'];
-  $contadorGV['GasOilLitros']=$contadorGV['GasOilLitros']+$row['GasOilLitros'];
-  $contadorGV['Lavado']=$contadorGV['Lavado']+$row['Lavado'];
-  $contadorGV['Gomeria']=$contadorGV['Gomeria']+$row['Gomeria'];
-  $contadorGV['Cabify']=$contadorGV['Cabify']+$row['Cabify'];
-  $contadorGV['Otros']=$contadorGV['Otros']+$row['Otros'];
-  $contadorGV['Efectivo']=$contadorGV['Efectivo']+$row['Efectivo'];
-  $contadorGV['Gastos']=$contadorGV['Gastos']+$row['Gastos'];
-  $contadorGV['Liquido']=$contadorGV['Liquido']+$row['Liquido'];
-  //$contadorGV['Observaciones']=$contadorGV['Observaciones']+$row['Observaciones'];
-  $contadorGV['Kilometros']=$contadorGV['Kilometros']+$row['Kilometros'];
-  $contadorGV['MercPagoPersonal']=$contadorGV['MercPagoPersonal']+$row['MercPagoPersonal'];
-  $contadorGV['CabifyTarjetas']=$contadorGV['CabifyTarjetas']+$row['CabifyTarjetas'];
-  $contadorGV['OtraRetencion']=$contadorGV['OtraRetencion']+$row['OtraRetencion'];
-  $contadorGV['AporteReal']=$contadorGV['AporteReal']+$row['AporteReal'];
+if(isset($ListaGV)){
+  foreach($ListaGV as $row)
+  {
+    if(($contadorGV['KmEntrada']==0) or ($contadorGV['KmEntrada']>$row['KmEntrada']))
+    {
+      $contadorGV['KmEntrada']=$row['KmEntrada'];
+    }
+    if($contadorGV['KmSalida']<$row['KmSalida'])
+    {
+      $contadorGV['KmSalida']=$row['KmSalida'];
+    }
 
+    $contadorGV['Recaudado']=$contadorGV['Recaudado']+$row['Recaudado'];
+    $contadorGV['Salario']=$contadorGV['Salario']+$row['Salario'];
+    $contadorGV['Laudo']=$contadorGV['Laudo']+$row['Laudo'];
+    $contadorGV['Comision']=$contadorGV['Comision']+$row['Comision'];
+    $contadorGV['ViaticoNoCobrado']=$contadorGV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
+    $contadorGV['ViaticoCobrado']=$contadorGV['ViaticoCobrado']+$row['ViaticoCobrado'];
+    $contadorGV['FeriadoNoCobrado']=$contadorGV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
+    $contadorGV['FeriadoCobrado']=$contadorGV['FeriadoCobrado']+$row['FeriadoCobrado'];
+    $contadorGV['AporteSalario']=$contadorGV['AporteSalario']+$row['AporteSalario'];
+    $contadorGV['AporteViatico']=$contadorGV['AporteViatico']+$row['AporteViatico'];
+    $contadorGV['AporteFeriado']=$contadorGV['AporteFeriado']+$row['AporteFeriado'];
+    $contadorGV['AporteTotales']=$contadorGV['AporteTotales']+$row['AporteTotales'];
+    $contadorGV['H13Patronal']=$contadorGV['H13Patronal']+$row['H13Patronal'];
+    $contadorGV['R12Celeritas']=$contadorGV['R12Celeritas']+$row['R12Celeritas'];
+    $contadorGV['MerPagoCeleritas']=$contadorGV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
+    $contadorGV['H13Especiales']=$contadorGV['H13Especiales']+$row['H13Especiales'];
+    $contadorGV['MercPago']=$contadorGV['MercPago']+$row['MercPago'];
+    $contadorGV['OcaCel']=$contadorGV['OcaCel']+$row['OcaCel'];
+    $contadorGV['Bits']=$contadorGV['Bits']+$row['Bits'];
+    $contadorGV['Tarjetas']=$contadorGV['Tarjetas']+$row['Tarjetas'];
+    $contadorGV['GasOilPlata']=$contadorGV['GasOilPlata']+$row['GasOilPlata'];
+    $contadorGV['GasOilLitros']=$contadorGV['GasOilLitros']+$row['GasOilLitros'];
+    $contadorGV['Lavado']=$contadorGV['Lavado']+$row['Lavado'];
+    $contadorGV['Gomeria']=$contadorGV['Gomeria']+$row['Gomeria'];
+    $contadorGV['Cabify']=$contadorGV['Cabify']+$row['Cabify'];
+    $contadorGV['Otros']=$contadorGV['Otros']+$row['Otros'];
+    $contadorGV['Efectivo']=$contadorGV['Efectivo']+$row['Efectivo'];
+    $contadorGV['Gastos']=$contadorGV['Gastos']+$row['Gastos'];
+    $contadorGV['Liquido']=$contadorGV['Liquido']+$row['Liquido'];
+    //$contadorGV['Observaciones']=$contadorGV['Observaciones']+$row['Observaciones'];
+    $contadorGV['Kilometros']=$contadorGV['Kilometros']+$row['Kilometros'];
+    $contadorGV['MercPagoPersonal']=$contadorGV['MercPagoPersonal']+$row['MercPagoPersonal'];
+    $contadorGV['CabifyTarjetas']=$contadorGV['CabifyTarjetas']+$row['CabifyTarjetas'];
+    $contadorGV['OtraRetencion']=$contadorGV['OtraRetencion']+$row['OtraRetencion'];
+    $contadorGV['AporteReal']=$contadorGV['AporteReal']+$row['AporteReal'];
+
+  }
+}
+  
+
+if(isset($ListaMV)){
+  foreach($ListaMV as $row)
+  {
+    if(($contadorMV['KmEntrada']==0) or ($contadorMV['KmEntrada']>$row['KmEntrada']))
+    {
+      $contadorMV['KmEntrada']=$row['KmEntrada'];
+    }
+    if($contadorMV['KmSalida']<$row['KmSalida'])
+    {
+      $contadorMV['KmSalida']=$row['KmSalida'];
+    }
+
+    $contadorMV['Recaudado']=$contadorMV['Recaudado']+$row['Recaudado'];
+    $contadorMV['Salario']=$contadorMV['Salario']+$row['Salario'];
+    $contadorMV['Laudo']=$contadorMV['Laudo']+$row['Laudo'];
+    $contadorMV['Comision']=$contadorMV['Comision']+$row['Comision'];
+    $contadorMV['ViaticoNoCobrado']=$contadorMV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
+    $contadorMV['ViaticoCobrado']=$contadorMV['ViaticoCobrado']+$row['ViaticoCobrado'];
+    $contadorMV['FeriadoNoCobrado']=$contadorMV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
+    $contadorMV['FeriadoCobrado']=$contadorMV['FeriadoCobrado']+$row['FeriadoCobrado'];
+    $contadorMV['AporteSalario']=$contadorMV['AporteSalario']+$row['AporteSalario'];
+    $contadorMV['AporteViatico']=$contadorMV['AporteViatico']+$row['AporteViatico'];
+    $contadorMV['AporteFeriado']=$contadorMV['AporteFeriado']+$row['AporteFeriado'];
+    $contadorMV['AporteTotales']=$contadorMV['AporteTotales']+$row['AporteTotales'];
+    $contadorMV['H13Patronal']=$contadorMV['H13Patronal']+$row['H13Patronal'];
+    $contadorMV['R12Celeritas']=$contadorMV['R12Celeritas']+$row['R12Celeritas'];
+    $contadorMV['MerPagoCeleritas']=$contadorMV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
+    $contadorMV['H13Especiales']=$contadorMV['H13Especiales']+$row['H13Especiales'];
+    $contadorMV['MercPago']=$contadorMV['MercPago']+$row['MercPago'];
+    $contadorMV['OcaCel']=$contadorMV['OcaCel']+$row['OcaCel'];
+    $contadorMV['Bits']=$contadorMV['Bits']+$row['Bits'];
+    $contadorMV['Tarjetas']=$contadorMV['Tarjetas']+$row['Tarjetas'];
+    $contadorMV['GasOilPlata']=$contadorMV['GasOilPlata']+$row['GasOilPlata'];
+    $contadorMV['GasOilLitros']=$contadorMV['GasOilLitros']+$row['GasOilLitros'];
+    $contadorMV['Lavado']=$contadorMV['Lavado']+$row['Lavado'];
+    $contadorMV['Gomeria']=$contadorMV['Gomeria']+$row['Gomeria'];
+    $contadorMV['Cabify']=$contadorMV['Cabify']+$row['Cabify'];
+    $contadorMV['Otros']=$contadorMV['Otros']+$row['Otros'];
+    $contadorMV['Efectivo']=$contadorMV['Efectivo']+$row['Efectivo'];
+    $contadorMV['Gastos']=$contadorMV['Gastos']+$row['Gastos'];
+    $contadorMV['Liquido']=$contadorMV['Liquido']+$row['Liquido'];
+    $contadorMV['Kilometros']=$contadorMV['Kilometros']+$row['Kilometros'];
+    $contadorMV['MercPagoPersonal']=$contadorMV['MercPagoPersonal']+$row['MercPagoPersonal'];
+    $contadorMV['CabifyTarjetas']=$contadorMV['CabifyTarjetas']+$row['CabifyTarjetas'];
+    $contadorMV['OtraRetencion']=$contadorMV['OtraRetencion']+$row['OtraRetencion'];
+    $contadorMV['AporteReal']=$contadorMV['AporteReal']+$row['AporteReal'];
+
+  }
 }
 
-if(isset($ListaMV))
-foreach($ListaMV as $row)
-{
-    
-  //$contadorMV['id']=$contadorMV['']+$row['id'];
-  //$contadorMV['fecha']=$contadorMV['']+$row[''];
-  if(($contadorMV['KmEntrada']==0) or ($contadorMV['KmEntrada']>$row['KmEntrada']))
-  {
-    $contadorMV['KmEntrada']=$row['KmEntrada'];
-  }
-  if($contadorMV['KmSalida']<$row['KmSalida'])
-  {
-    $contadorMV['KmSalida']=$row['KmSalida'];
-  }
-
-  //$contadorMV['Chofer']=$contadorMV['']+$row[''];
-  //$contadorMV['Movil']=$contadorMV['']+$row[''];
-  //$contadorMV['HoraEntrada']=$contadorMV['']+$row[''];
-  //$contadorMV['HoraSalida']=$contadorMV['']+$row[''];
-  //$contadorMV['Sueldo']=$contadorMV['']+$row[''];
-  //$contadorMV['BPS']=$contadorMV['']+$row[''];
-  $contadorMV['Recaudado']=$contadorMV['Recaudado']+$row['Recaudado'];
-  $contadorMV['Salario']=$contadorMV['Salario']+$row['Salario'];
-  $contadorMV['Laudo']=$contadorMV['Laudo']+$row['Laudo'];
-  $contadorMV['Comision']=$contadorMV['Comision']+$row['Comision'];
-  $contadorMV['ViaticoNoCobrado']=$contadorMV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
-  $contadorMV['ViaticoCobrado']=$contadorMV['ViaticoCobrado']+$row['ViaticoCobrado'];
-  $contadorMV['FeriadoNoCobrado']=$contadorMV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
-  $contadorMV['FeriadoCobrado']=$contadorMV['FeriadoCobrado']+$row['FeriadoCobrado'];
-  $contadorMV['AporteSalario']=$contadorMV['AporteSalario']+$row['AporteSalario'];
-  $contadorMV['AporteViatico']=$contadorMV['AporteViatico']+$row['AporteViatico'];
-  $contadorMV['AporteFeriado']=$contadorMV['AporteFeriado']+$row['AporteFeriado'];
-  $contadorMV['AporteTotales']=$contadorMV['AporteTotales']+$row['AporteTotales'];
-  $contadorMV['H13Patronal']=$contadorMV['H13Patronal']+$row['H13Patronal'];
-  $contadorMV['R12Celeritas']=$contadorMV['R12Celeritas']+$row['R12Celeritas'];
-  $contadorMV['MerPagoCeleritas']=$contadorMV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
-  $contadorMV['H13Especiales']=$contadorMV['H13Especiales']+$row['H13Especiales'];
-  $contadorMV['MercPago']=$contadorMV['MercPago']+$row['MercPago'];
-  $contadorMV['OcaCel']=$contadorMV['OcaCel']+$row['OcaCel'];
-  $contadorMV['Bits']=$contadorMV['Bits']+$row['Bits'];
-  $contadorMV['Tarjetas']=$contadorMV['Tarjetas']+$row['Tarjetas'];
-  $contadorMV['GasOilPlata']=$contadorMV['GasOilPlata']+$row['GasOilPlata'];
-  $contadorMV['GasOilLitros']=$contadorMV['GasOilLitros']+$row['GasOilLitros'];
-  $contadorMV['Lavado']=$contadorMV['Lavado']+$row['Lavado'];
-  $contadorMV['Gomeria']=$contadorMV['Gomeria']+$row['Gomeria'];
-  $contadorMV['Cabify']=$contadorMV['Cabify']+$row['Cabify'];
-  $contadorMV['Otros']=$contadorMV['Otros']+$row['Otros'];
-  $contadorMV['Efectivo']=$contadorMV['Efectivo']+$row['Efectivo'];
-  $contadorMV['Gastos']=$contadorMV['Gastos']+$row['Gastos'];
-  $contadorMV['Liquido']=$contadorMV['Liquido']+$row['Liquido'];
-  //$contadorMV['Observaciones']=$contadorMV['Observaciones']+$row['Observaciones'];
-  $contadorMV['Kilometros']=$contadorMV['Kilometros']+$row['Kilometros'];
-  $contadorMV['MercPagoPersonal']=$contadorMV['MercPagoPersonal']+$row['MercPagoPersonal'];
-  $contadorMV['CabifyTarjetas']=$contadorMV['CabifyTarjetas']+$row['CabifyTarjetas'];
-  $contadorMV['OtraRetencion']=$contadorMV['OtraRetencion']+$row['OtraRetencion'];
-  $contadorMV['AporteReal']=$contadorMV['AporteReal']+$row['AporteReal'];
-
-}
 
 foreach($listaPA as $row)
 {
-    
-  //$contadorPA['id']=$contadorPA['']+$row['id'];
-  //$contadorPA['fecha']=$contadorPA['']+$row[''];
   if(($contadorPA['KmEntrada']==0) or ($contadorPA['KmEntrada']>$row['KmEntrada']))
   {
     $contadorPA['KmEntrada']=$row['KmEntrada'];
@@ -680,12 +643,6 @@ foreach($listaPA as $row)
     $contadorPA['KmSalida']=$row['KmSalida'];
   }
 
-  //$contadorPA['Chofer']=$contadorPA['']+$row[''];
-  //$contadorPA['Movil']=$contadorPA['']+$row[''];
-  //$contadorPA['HoraEntrada']=$contadorPA['']+$row[''];
-  //$contadorPA['HoraSalida']=$contadorPA['']+$row[''];
-  //$contadorPA['Sueldo']=$contadorPA['']+$row[''];
-  //$contadorPA['BPS']=$contadorPA['']+$row[''];
   $contadorPA['Recaudado']=$contadorPA['Recaudado']+$row['Recaudado'];
   $contadorPA['Salario']=$contadorPA['Salario']+$row['Salario'];
   $contadorPA['Laudo']=$contadorPA['Laudo']+$row['Laudo'];
@@ -715,22 +672,17 @@ foreach($listaPA as $row)
   $contadorPA['Efectivo']=$contadorPA['Efectivo']+$row['Efectivo'];
   $contadorPA['Gastos']=$contadorPA['Gastos']+$row['Gastos'];
   $contadorPA['Liquido']=$contadorPA['Liquido']+$row['Liquido'];
-  //$contadorPA['Observaciones']=$contadorPA['Observaciones']+$row['Observaciones'];
   $contadorPA['Kilometros']=$contadorPA['Kilometros']+$row['Kilometros'];
   $contadorPA['MercPagoPersonal']=$contadorPA['MercPagoPersonal']+$row['MercPagoPersonal'];
   $contadorPA['CabifyTarjetas']=$contadorPA['CabifyTarjetas']+$row['CabifyTarjetas'];
   $contadorPA['OtraRetencion']=$contadorPA['OtraRetencion']+$row['OtraRetencion'];
   $contadorPA['AporteReal']=$contadorPA['AporteReal']+$row['AporteReal'];
   echo "<br>";
-  //print_r($row);
 
 }
 
 foreach($listaOtrosGastos as $row)
 {
-    
-  //$contadorOtros['id']=$contadorOtros['']+$row['id'];
-  //$contadorOtros['fecha']=$contadorOtros['']+$row[''];
   if(($contadorOtros['KmEntrada']==0) or ($contadorOtros['KmEntrada']>$row['KmEntrada']))
   {
     $contadorOtros['KmEntrada']=$row['KmEntrada'];
@@ -740,12 +692,6 @@ foreach($listaOtrosGastos as $row)
     $contadorOtros['KmSalida']=$row['KmSalida'];
   }
 
-  //$contadorOtros['Chofer']=$contadorOtros['']+$row[''];
-  //$contadorOtros['Movil']=$contadorOtros['']+$row[''];
-  //$contadorOtros['HoraEntrada']=$contadorOtros['']+$row[''];
-  //$contadorOtros['HoraSalida']=$contadorOtros['']+$row[''];
-  //$contadorOtros['Sueldo']=$contadorOtros['']+$row[''];
-  //$contadorOtros['BPS']=$contadorOtros['']+$row[''];
   $contadorOtros['Recaudado']=$contadorOtros['Recaudado']+$row['Recaudado'];
   $contadorOtros['Salario']=$contadorOtros['Salario']+$row['Salario'];
   $contadorOtros['Laudo']=$contadorOtros['Laudo']+$row['Laudo'];
@@ -775,7 +721,6 @@ foreach($listaOtrosGastos as $row)
   $contadorOtros['Efectivo']=$contadorOtros['Efectivo']+$row['Efectivo'];
   $contadorOtros['Gastos']=$contadorOtros['Gastos']+$row['Gastos'];
   $contadorOtros['Liquido']=$contadorOtros['Liquido']+$row['Liquido'];
-  //$contadorOtros['Observaciones']=$contadorOtros['Observaciones']+$row['Observaciones'];
   $contadorOtros['Kilometros']=$contadorOtros['Kilometros']+$row['Kilometros'];
   $contadorOtros['MercPagoPersonal']=$contadorOtros['MercPagoPersonal']+$row['MercPagoPersonal'];
   $contadorOtros['CabifyTarjetas']=$contadorOtros['CabifyTarjetas']+$row['CabifyTarjetas'];
@@ -794,267 +739,127 @@ foreach ($listaOtrosGastos as $row)
 }
 
 $tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-//$tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-  //echo "$ ".$contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']); 
 $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0]-$contador['LaudoNoCobrado'];
 $tempGanaciaNeta=round($tempGanaciaNeta,2);
 
-/*
-$tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-//echo "$ ".$contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']); 
-$tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0];
-echo "$ ".round($tempGanaciaNeta,2);*/
 
 ?>
 
-<div class="container text-center abs-center">
-  <h1>Resumen</h1>
-  <hr>
-  <form action="?plate=" method="post">
-  Desde : 
-  <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
-  Hasta: 
-  <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
-  <button type="sumit" class="btn btn-primary">Buscar</button>
-</form>
-  <hr>
-
-
-<div id="columnchart_values" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
-
-<div id="columnchart_values2" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
-
-<div id="columnchart_values3" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
-
-<div id="piechart" style="width: 900px; height: 500px;"></div>
-
-</p>
-  </div>
 <html>
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
+    <?php if (!empty($dt)) { ?>
+    <script>
+      google.charts.load('current', {
+                          packages: ['corechart', 'bar']
+                        });
+      google.charts.setOnLoadCallback(drawAll);
 
-      function drawStuff() {
+      function drawAll() {
+        drawMoviles();
+        drawChoferes();
+        drawGastos();
+        drawChart();
+      }
+
+      function drawMoviles() {
         var data = google.visualization.arrayToDataTable([
-        ["Element", "Monto", { role: "style" } ],
-        <?php
-        foreach($listaDeTipos as $row)
-        {
-            if($row['monto']<0)
-                echo "[\"".$row['tipo']."\", ".$row['monto'].", '#ff0000'],";
-            else
-                echo "[\"".$row['tipo']."\", ".$row['monto'].", '#00ff00'],";
-        }
-        $Salarios=-1*$Salarios;
-        //echo "[\"Salarios\", ".$Salarios.", '#0000ff'],";
+          ["Element", "Recaudado", { role: "style" } ],
+          <?php
+          foreach($dt as $row)
+          {
+              echo "[\"".$row['Movil']." | ".$row['km']." $/km\", ".$row['Recaudado'].", '#b87333'],";
+          }
+          echo "[\"0\", 0, '#b87333'],";
+          ?>
+        ]);
+        
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1,
+                        { calc: "stringify",
+                          sourceColumn: 1,
+                          type: "string",
+                          role: "annotation" },
+                        2]);
 
-        ?>
-      ]);
-
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
-
-                       var options = {
-        title: "Resumen de gastos",
-        //width: 600,
-        //height: 400,
-        bar: {groupWidth: "50%"},
-        legend: { position: "none" },
-      };
-
-        //var chart = new google.charts.Bar(document.getElementById('top_x_div'));
-        // Convert the Classic options to Material options.
-        //chart.draw(view, google.charts.Bar.convertOptions(options));
-
-        var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values3"));
-        chart.draw(view, options);
-      };
-    </script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
-
-      function drawStuff() {
-        var data = google.visualization.arrayToDataTable([
-        ["Element", "Recaudado", { role: "style" } ],
-        <?php
-        foreach($dt as $row)
-        {
-            echo "[\"".$row['Movil']." | ".$row['km']." $/km\", ".$row['Recaudado'].", '#b87333'],";
-        }
-        echo "[\"0\", 0, '#b87333'],";
-        ?>
-      ]);
-
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
-
-                       var options = {
-        title: "Recaudaciones por Móviles",
-        //width: 600,
-        //height: 400,
-        bar: {groupWidth: "50%"},
-        legend: { position: "none" },
-      };
-
-        //var chart = new google.charts.Bar(document.getElementById('top_x_div'));
-        // Convert the Classic options to Material options.
-        //chart.draw(view, google.charts.Bar.convertOptions(options));
+        var options = {
+          title: "Recaudaciones por Móviles",
+          bar: {groupWidth: "50%"},
+          legend: { position: "none" },
+        };
 
         var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
         chart.draw(view, options);
       };
-    </script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
 
-      function drawStuff() {
+      function drawChoferes() {
         var data = google.visualization.arrayToDataTable([
-        ["Element", "Density", { role: "style" } ],
-        <?php
-        foreach($dtChoferes as $row)
-        {
-            if($_SESSION['empresa']==$row['RUT'])
-                echo "[\"".$row['Nombre']."\", ".$row['Recaudado'].", '#000000'],";
-            else
-                echo "[\"".$row['Nombre']."\", ".$row['Recaudado'].", '#ffff00'],";
+          ["Element", "Density", { role: "style" } ],
+          <?php
+          foreach($dtChoferes as $row)
+          {
+              if($_SESSION['empresa']==$row['RUT'])
+                  echo "[\"".$row['Nombre']."\", ".$row['Recaudado'].", '#000000'],";
+              else
+                  echo "[\"".$row['Nombre']."\", ".$row['Recaudado'].", '#ffff00'],";
 
-        }
-        ?>
-      ]);
+          }
+          ?>
+        ]);
 
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1,
+                        { calc: "stringify",
+                          sourceColumn: 1,
+                          type: "string",
+                          role: "annotation" },
+                        2]);
 
-       var options = {
-        title: "Recaudaciones por choferes",
-        //width: 600,
-        //height: 400,
-        bar: {groupWidth: "50%"},
-        legend: { position: "none" },
-      };
-
-        //var chart = new google.charts.Bar(document.getElementById('top_x_div'));
-        // Convert the Classic options to Material options.
-        //chart.draw(view, google.charts.Bar.convertOptions(options));
+        var options = {
+          title: "Recaudaciones por choferes",
+          bar: {groupWidth: "50%"},
+          legend: { position: "none" },
+        };
 
         var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values2"));
         chart.draw(view, options);
       };
-    </script>
-    <script type="text/javascript">
-    google.charts.load("current", {packages:["corechart"]});
-    google.charts.setOnLoadCallback(drawChart);
-    google.charts.setOnLoadCallback(drawChart2);
-    google.charts.setOnLoadCallback(drawChart3);
 
-    function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ["Móvil", "Recaudado", { role: "style" } ],
-        <?php
-        foreach($dt as $row)
-        {
-            echo "['".$row['Movil']."', ".$row['Recaudado'].", '#6ADAD3'],";
-        }
-        ?>
-      ]);
-
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
-
-      var options = {
-        title: "Recaudaciones por Móvil",
-        width: 600,
-        height: 400,
-        bar: {groupWidth: "95%"},
-        legend: { position: "none" },
-      };
-      var chart = new google.visualization.BarChart(document.getElementById("barchart_values"));
-      chart.draw(view, options);
-    }
-    function drawChart2() {
-      var data = google.visualization.arrayToDataTable([
-        ["Chofer", "Recaudado", { role: "style" } ],
-        <?php
-        foreach($dtChoferes as $row)
-        {
-            echo "['".$row['Nombre']."', ".$row['Recaudado'].", '#6ADAD3'],";
-        }
-        ?>
-      ]);
-
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1,
-                       { calc: "stringify",
-                         sourceColumn: 1,
-                         type: "string",
-                         role: "annotation" },
-                       2]);
-
-      var options = {
-        title: "Recaudaciones por Chofer",
-        width: 1000,
-        height: 1300,
-        bar: {groupWidth: "50%"},
-        legend: { position: "none" },
-      };
-      var chart = new google.visualization.BarChart(document.getElementById("barchart_values2"));
-      chart.draw(view, options);
-    }
-    
-    google.charts.load("current", {packages:["corechart"]});
-      google.charts.setOnLoadCallback(drawChart3);
-      function drawChart3() {
+      function drawGastos() {
         var data = google.visualization.arrayToDataTable([
-          ['Detalle', 'Monto'],
-          ['Gastos Fijos: <?php echo "$ ".$contadorGF['Liquido']; ?>', <?php echo $contadorGF['Liquido']; ?>],
-          ['Gastos Variables: <?php echo "$ ".$contadorGV['Liquido']*(-1); ?>', <?php echo $contadorGV['Liquido']*(-1); ?>],
-          ['Salarios y Laudos:<?php echo "$ ".$contador['Salario']+$contador['Laudo']+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']+$contador['LaudoNoCobrado']; ?>', <?php echo $contador['Salario']+$contador['Laudo']+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']+$contador['LaudoNoCobrado']; ?>],
-          ['Viáticos: <?php echo "$ ".$contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?>', <?php echo $contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?>],
-          
+          ["Element", "Monto", { role: "style" } ],
+          <?php
+          foreach($listaDeTipos as $row)
+          {
+              if($row['monto']<0)
+                  echo "[\"".$row['tipo']."\", ".$row['monto'].", '#ff0000'],";
+              else
+                  echo "[\"".$row['tipo']."\", ".$row['monto'].", '#00ff00'],";
+          }
+          $Salarios=-1*$Salarios;
+          //echo "[\"Salarios\", ".$Salarios.", '#0000ff'],";
+          ?>
         ]);
-/*
 
-*/
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1,
+                        { calc: "stringify",
+                          sourceColumn: 1,
+                          type: "string",
+                          role: "annotation" },
+                        2]);
+
         var options = {
-          title: 'Informe de Gastos',
-          is3D: true,
+          title: "Resumen de gastos",
+          bar: {groupWidth: "50%"},
+          legend: { position: "none" },
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-        chart.draw(data, options);
-      }
-    </script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+        var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values3"));
+        chart.draw(view, options);
+      };
 
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable([
           ['Detalle', 'Monto'],
           ['Gastos Fijos: <?php echo "$ ".$contadorGF['Liquido']; ?>', <?php echo $contadorGF['Liquido']; ?>],
@@ -1063,10 +868,12 @@ echo "$ ".round($tempGanaciaNeta,2);*/
           ['Viáticos:<?php echo "$ ".$contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?>', <?php echo $contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?>],
           //['Ganancia Neta: <?php echo "$ ".round($tempGanaciaNeta+$contador['LaudoNoCobrado'],2); ?>', <?php echo round($tempGanaciaNeta+$contador['LaudoNoCobrado'],2); ?>],
           ['Ganancia Neta: <?php echo "$ ".round($tempGanaciaNeta,2); ?>', <?php echo round($tempGanaciaNeta,2); ?>],
-          <?php foreach($combutibleTipos as $row)
-        {
-          echo "['".$row['Tipo'].": ".$row['Monto']."',".$row['Monto']."],";
-        } ?>
+          <?php 
+          foreach($combutibleTipos as $row)
+          {
+            echo "['".$row['Tipo'].": ".$row['Monto']."',".$row['Monto']."],";
+          } 
+          ?>
         ]);
 
         var options = {
@@ -1077,9 +884,32 @@ echo "$ ".round($tempGanaciaNeta,2);*/
 
         chart.draw(data, options);
       }
+
     </script>
+    <?php } ?>
   </head>
 <body>
+  <div class="container text-center abs-center">
+    <h1>Resumen</h1>
+    <hr>
+    <form action="?plate=" method="post">
+      Desde : 
+      <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
+      Hasta: 
+      <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
+      <button type="sumit" class="btn btn-primary">Buscar</button>
+    </form>
+    <hr>
+
+    <?php if (!empty($dt)){ ?>
+    <div id="columnchart_values" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
+
+    <div id="columnchart_values2" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
+
+    <div id="columnchart_values3" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
+
+    <div id="piechart" style="width: 100%; height: 500px;" class="container text-center abs-center"></div>
+    <?php } ?>
+  </div>
 </body>
 </html>
-</div>
