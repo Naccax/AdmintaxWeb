@@ -1,5 +1,4 @@
 <?php
-//include 'index.php';
 session_start();
 if(!(isset($_SESSION['empresa'])))
 {
@@ -16,30 +15,14 @@ $todosLosMoviles=ejecutarConsulta($consulta);
 $inicio = date("Y-m-01");
 $fin = date("Y-m-t");
 
-/*
-if(isset($_SESSION["desde"]))
-{
-  $inicio = $_SESSION["desde"];
-  $fin = $_SESSION["hasta"];
-  
-  //$fecha=explode("-",date("Y-m-d",$inicio));
-  
-  $inicio = strtotime($inicio."- 1 days");
-  $fin = strtotime($fin."+ 1 days");
-}
-*/
-
 $empresaID=$EmpresaDatos[0]["id"];
 
 $sql = "SELECT * FROM `planilladetrabajo` WHERE Fecha BETWEEN '$inicio 00:00:00' AND '$fin 23:59:00' AND EmpresaID ='$empresaID' AND Concepto = 'Recibo Sueldo'";
-//echo "$sql";
 $PlanillaDeTrabajo=ejecutarConsulta($sql);
 
-//print_r($inicio);
 $fecha=explode("-",$inicio);
 
 
-//echo " " . $fecha[0];
 $meces["01"]="Enero";
 $meces["02"]="Febrero";
 $meces["03"]="Marzo";
@@ -58,7 +41,6 @@ $cont=0;
 
 
 $sql = "SELECT * FROM `recibodetallerw` WHERE `recibodetallerw`.`IdRs`='".$_GET["RSID"]."'";
-//echo "$sql";
 $reciboSueldo=ejecutarConsulta($sql);
 
 
@@ -228,8 +210,7 @@ foreach($reciboSueldo as $row)
 $liquidoPorViaticos=$ViaticosTotales-(($ViaticosTotales/2)*($porcentajeDeAportesObligatorios/100));
 $descuentoFonasa=$porcentajeDeAportesObligatorios-0.1-15;
 $TotalDescuentos=$TotalDescuentos*(-1);
-$_SESSION["hasta"]=$_GET['Fecha'];
-$fff=explode("-",$_SESSION["hasta"]);
+$fff=explode("-",$_GET['Fecha']);
 
 ?>
 
@@ -396,7 +377,7 @@ $fff=explode("-",$_SESSION["hasta"]);
             <tr><td>IRPF (Anticpo)(Imp. $28.696)</td><td>0</td><td>0</td></tr>
             <tr><td>F.R.L</td><td>0.100%</td><td><?php echo "$&nbsp;".round((0.1*$totalParaAportacion/100),2); ?></td></tr>
             <tr><td>IRPF Corresp. a reliq. viáticos</td><td>0</td><td>0</td></tr>
-            <tr><td>Retencion P.A. $<?php echo $Retencion["Sueldo"]; ?>(Sueldo) + $<?php echo $Retencion["Viatico"]; ?>(Viático)</td><td><?php echo $choferes[$_GET["CHID"]]["Retención"]."%"; ?></td><td>$ <?php echo $Retencion["Viatico"]+$Retencion["Sueldo"]; ?></td></tr>
+            <tr><td>Retencion P.A. $<?php if (!empty($Retencion)){ echo $Retencion["Sueldo"]; ?>(Sueldo) + $<?php echo $Retencion["Viatico"]; }else{ echo "0(Sueldo) + $0";}?>(Viático)</td><td><?php echo $choferes[$_GET["CHID"]]["Retención"]."%"; ?></td><td>$ <?php if (!empty($Retencion)){ echo $Retencion["Viatico"]+$Retencion["Sueldo"];}else{ echo "0";} ?></td></tr>
             <tr><td colspan="2">Total de descuentos:</td><td><?php echo "$ &nbsp;".$TotalDescuentos; ?></td></tr>
         </table>
         <br><br>
@@ -597,7 +578,7 @@ $fff=explode("-",$_SESSION["hasta"]);
             <tr><td>IRPF (Anticpo)(Imp. $28.696)</td><td>0</td><td>0</td></tr>
             <tr><td>F.R.L</td><td>0.100%</td><td><?php echo "$&nbsp;".round((0.1*$totalParaAportacion/100),2); ?></td></tr>
             <tr><td>IRPF Corresp. a reliq. viáticos</td><td>0</td><td>0</td></tr>
-            <tr><td>Retencion P.A. $<?php echo $Retencion["Sueldo"]; ?>(Sueldo) + $<?php echo $Retencion["Viatico"]; ?>(Viático)</td><td><?php echo $choferes[$_GET["CHID"]]["Retención"]."%"; ?></td><td>$ <?php echo $Retencion["Viatico"]+$Retencion["Sueldo"]; ?></td></tr>
+            <tr><td>Retencion P.A. $<?php if (!empty($Retencion)){ echo $Retencion["Sueldo"]; ?>(Sueldo) + $<?php echo $Retencion["Viatico"];}else{ echo "0(Sueldo) + 0";} ?>(Viático)</td><td><?php echo $choferes[$_GET["CHID"]]["Retención"]."%"; ?></td><td>$ <?php if (!empty($Retencion)){ echo $Retencion["Viatico"]+$Retencion["Sueldo"];}else{ echo "0";} ?></td></tr>
             <tr><td colspan="2">Total de descuentos:</td><td><?php echo "$ &nbsp;".$TotalDescuentos; ?></td></tr>
         </table>
         <br><br>

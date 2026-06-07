@@ -1,12 +1,5 @@
 body {
-    background: linear-gradient(#ff0000, #000000);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-image: url("./logo.png");
-    background-repeat: no-repeat, repeat;
     background-color: #cccccc;
-    background-size:contain;
-    background-position: center;
   }
 
   div.container

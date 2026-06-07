@@ -2,10 +2,7 @@
 <?php 
 include('index.php'); 
 
-//print_r($_POST);
-
-
-$consulta="SELECT * FROM movil";//moviles
+$consulta="SELECT * FROM movil";
 $movilestemp = ejecutarConsulta($consulta);
 
 function actualizarChoferes()
@@ -18,6 +15,7 @@ function actualizarChoferes()
         Insert($consulta);
     }    
 }
+
 function actualizarMoviles()
 {
     $consulta="SELECT COUNT(multas.id) AS cant, multas.movil as movil, multas.MovilId FROM multas WHERE multas.Estado='Activa' GROUP BY multas.MovilId;";
@@ -107,8 +105,6 @@ else
 
 $todosLosMoviles=ejecutarConsulta($consulta);
 
-//print_r($_POST);
-
 if (isset($_POST["Más_detalles"])) {
     $_SESSION["mas"] = !isset($_SESSION["mas"]) || true;
 }
@@ -139,9 +135,6 @@ if (isset($_POST["Ver_Entregas"]))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
@@ -159,88 +152,85 @@ if (isset($_POST["Ver_Entregas"]))
 <body>
     <div class="container" style="margin-top: 10px;padding: 5px">
     
-<form action="#" method="POST">
-<input type="submit" name="Mostrar Todos" value="Mostrar Todos" class="btn btn-danger" >
-<?php 
-            
+        <form action="#" method="POST">
+            <input type="submit" name="Mostrar Todos" value="Mostrar Todos" class="btn btn-danger" >
+            <?php 
             if(isset($_SESSION["mas"]) && $_SESSION["mas"]){ 
-               echo '<input type="submit" name="Menos detalles" value="Menos detalles" class="btn btn-success" >';
+                echo '<input type="submit" name="Menos detalles" value="Menos detalles" class="btn btn-success" >';
             }else
             {
                 echo '<input type="submit" name="Más detalles" value="Más detalles" class="btn btn-success" >';
             }
-?>  
-</form>
+            ?>  
+        </form>
 
-    <table id="tablax" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <th>Estado</th>
-            <th>Chofer</th>
-            <th>Movil</th>
-            <th>Motivo</th>
-            <th>Saldo</th>
-            <?php 
-            
-            if(isset($_SESSION["mas"]) && $_SESSION["mas"]){ 
-                echo "
-                <th>Fecha</th>
-                <th>Detalle</th>
-                <th>Monto</th>
-                <th>Entregado</th>";
-            }; ?>
-        </thead>
-        <tbody>
-            <?php
-                foreach($todosLosMoviles as $row)
-                {
-                    echo '<tr>';
-                    echo '<td>';
-                    echo $row['Estado'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['Nombre'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['movil'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['Motivo'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['saldo'];
-                    echo '</td>';
-                    if(isset($_SESSION["mas"]) && $_SESSION["mas"])
+        <table id="tablax" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <th>Estado</th>
+                <th>Chofer</th>
+                <th>Movil</th>
+                <th>Motivo</th>
+                <th>Saldo</th>
+                <?php 
+                
+                if(isset($_SESSION["mas"]) && $_SESSION["mas"]){ 
+                    echo "
+                    <th>Fecha</th>
+                    <th>Detalle</th>
+                    <th>Monto</th>
+                    <th>Entregado</th>";
+                }; ?>
+            </thead>
+            <tbody>
+                <?php
+                    foreach($todosLosMoviles as $row)
                     {
+                        echo '<tr>';
                         echo '<td>';
-                        echo $row['fecha'];
+                        echo $row['Estado'];
                         echo '</td>';
                         echo '<td>';
-                        echo $row['detalle'];
+                        echo $row['Nombre'];
                         echo '</td>';
                         echo '<td>';
-                        echo $row['monto'];
+                        echo $row['movil'];
                         echo '</td>';
                         echo '<td>';
-                        echo $row['Entregado'];
+                        echo $row['Motivo'];
                         echo '</td>';
+                        echo '<td>';
+                        echo $row['saldo'];
+                        echo '</td>';
+                        if(isset($_SESSION["mas"]) && $_SESSION["mas"])
+                        {
+                            echo '<td>';
+                            echo $row['fecha'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['detalle'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['monto'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['Entregado'];
+                            echo '</td>';
 
+                        }
+                        echo '</tr>';                    
                     }
-                    echo '</tr>';                    
-                }
-            ?>
-        </tbody>
-    </table>
-</div>
+                ?>
+            </tbody>
+        </table>
+    </div>
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-        </script>
+    </script>
     <!-- DATATABLES -->
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <!-- BOOTSTRAP -->
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#tablax').DataTable({

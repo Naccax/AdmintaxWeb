@@ -22,9 +22,7 @@ if((isset($_GET['plate'])))
   }
   
   $sql="SELECT * FROM recaudaciones WHERE `Movil`='$movil' and Mantenimiento=".'"True"'." ORDER BY `recaudaciones`.`HoraEntrada` desc;";
-  //echo "$sql";
   $movimientos=ejecutarConsulta($sql);
-  //print_r($movimientos);
 
   
   $sql="SELECT max(`KmSalida`) FROM recaudaciones WHERE `Movil`='$movil';";
@@ -370,7 +368,6 @@ if((isset($_GET['plate'])))
     }
   }
 
-//print_r($choferes[6]['Nombre']);
 
   foreach($listarecaudaciones as $row)
   {
@@ -407,7 +404,6 @@ if((isset($_GET['plate'])))
     $contador['Efectivo']=$contador['Efectivo']+$row['Efectivo'];
     $contador['Gastos']=$contador['Gastos']+$row['Gastos'];
     $contador['Liquido']=$contador['Liquido']+$row['Liquido'];
-    //$contador['Observaciones']=$contador['Observaciones']+$row['Observaciones'];
     $contador['Kilometros']=$contador['Kilometros']+$row['Kilometros'];
     $contador['OtraRetencion']=$contador['OtraRetencion']+$row['OtraRetencion'];
     $contador['AporteReal']=$contador['AporteReal']+$row['AporteReal'];
@@ -422,79 +418,46 @@ if((isset($_GET['plate'])))
   <div class="container text-center abs-center">
     <h3>Kilometraje actual: <?php echo $kilometrajeactual[0][0]; ?></h3>
 
-  <table class="table">
-    <thead>
-    <tr>
-    <th>Fecha</th> <th>Detalle</th> <th>Monto</th><th>Kilometros</th><th>Prox.(KM)</th>
-    </tr></thead>
-    <?php 
-    //print_r($ListaGV);
-    //KmDuracion
-  if(isset($movimientos))
-    foreach ($movimientos as $row) 
-    {
-      if(($row['KmDuracion'] < $kilometrajeactual[0][0]) and ($row['KmDuracion']>0) and ($row['Alarma']=="True"))
-      {
-        echo '<tr class="filaRoja">';
-      }
-      else
-      {
-        echo "<tr>";
-      }
-      echo "<td>";
-      $sep = explode(" ", $row['fecha']);
-      echo $sep[0];
-      echo "</td>";
-      echo "<td  class='dts'>";
-      echo $row['Observaciones'];
-      echo "</td>";
-      echo "<td class='kms'>";
-      echo $row['Gastos'];
-      echo "</td>";
-      echo "<td class='kms'>";
-      echo $row['KmEntrada'];
-      echo "</td>";
-      echo "<td class='kms'>";
-      echo $row['KmDuracion'];
-      echo "</td>";
+    <table class="table">
+      <thead>
+      <tr>
+      <th>Fecha</th> <th>Detalle</th> <th>Monto</th><th>Kilometros</th><th>Prox.(KM)</th>
+      </tr></thead>
+      <?php 
+      if(isset($movimientos))
+        foreach ($movimientos as $row) 
+        {
+          if(($row['KmDuracion'] < $kilometrajeactual[0][0]) and ($row['KmDuracion']>0) and ($row['Alarma']=="True"))
+          {
+            echo '<tr class="filaRoja">';
+          }
+          else
+          {
+            echo "<tr>";
+          }
+          echo "<td>";
+          $sep = explode(" ", $row['fecha']);
+          echo $sep[0];
+          echo "</td>";
+          echo "<td  class='dts'>";
+          echo $row['Observaciones'];
+          echo "</td>";
+          echo "<td class='kms'>";
+          echo $row['Gastos'];
+          echo "</td>";
+          echo "<td class='kms'>";
+          echo $row['KmEntrada'];
+          echo "</td>";
+          echo "<td class='kms'>";
+          echo $row['KmDuracion'];
+          echo "</td>";
+          echo "</tr>";
+        }
 
-
-      echo "</tr>";
-    }
-
-    ?>
-  </table>
+      ?>
+    </table>
 
   </div>
 
 
-<?php
-
-//EFECTIVO A ENTREGAR (Descontando Viáticos y Feriados)
-
-
-
-/*
-  echo "<br><br><br>";
-  print_r($ListaGF);
-  echo "<br><br><br>";
-  print_r($ListaGV);
-  echo "<br><br><br>";
-  print_r($ListaMV);
-  echo "<br><br><br>";
-  print_r($listaOtrosGastos);*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-?>
+<?php }?>
