@@ -15,19 +15,6 @@ $todosLosMoviles=ejecutarConsulta($consulta);
 $inicio = date("Y-m-01");
 $fin = date("Y-m-t");
 
-/*
-if(isset($_SESSION["desde"]))
-{
-  $inicio = $_SESSION["desde"];
-  $fin = $_SESSION["hasta"];
-  
-  //$fecha=explode("-",date("Y-m-d",$inicio));
-  
-  $inicio = strtotime($inicio."- 1 days");
-  $fin = strtotime($fin."+ 1 days");
-}
-*/
-
 $empresaID=$EmpresaDatos[0]["id"];
 
 $sql = "SELECT * FROM `planilladetrabajo` WHERE Fecha BETWEEN '$inicio 00:00:00' AND '$fin 23:59:00' AND EmpresaID ='$empresaID' AND Concepto = 'Recibo Sueldo'";
@@ -223,8 +210,7 @@ foreach($reciboSueldo as $row)
 $liquidoPorViaticos=$ViaticosTotales-(($ViaticosTotales/2)*($porcentajeDeAportesObligatorios/100));
 $descuentoFonasa=$porcentajeDeAportesObligatorios-0.1-15;
 $TotalDescuentos=$TotalDescuentos*(-1);
-$_SESSION["hasta"]=$_GET['Fecha'];
-$fff=explode("-",$_SESSION["hasta"]);
+$fff=explode("-",$_GET['Fecha']);
 
 ?>
 
