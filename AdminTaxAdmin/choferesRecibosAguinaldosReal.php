@@ -1,12 +1,7 @@
 <script>
     function confirmacion() {
         var respuesta = confirm("¿Desea realmente borrar el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return respuesta;
     }
 </script>
 
@@ -152,15 +147,13 @@ $docs=ejecutarConsulta($consulta);
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
@@ -204,7 +197,6 @@ $docs=ejecutarConsulta($consulta);
     <table id="tablax" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <th>Empresa</th>
-            <!--<th>Empresa</th>-->
             <th>Aguinaldo</th>
             <?php if ($masInfo){echo '
             <th>Jornales</th>
@@ -212,7 +204,6 @@ $docs=ejecutarConsulta($consulta);
             <th>Fecha Desde</th>
             <th>Editar</th>
             <th>Eliminar</th>';
-            //ReciboRetroactivosAplicar.php?chofer=
             }?>
             <th>Hasta</th>
             <th>Recibos</th>
@@ -227,14 +218,7 @@ $docs=ejecutarConsulta($consulta);
                     echo '<tr>';
                     echo '<td>';
                     echo $empresas[$doc['Empresa']]['Nombre'];
-                    echo '</td>';/*
-                    echo '<td>';
-                    echo '<a href="recibo.php?rsid='.$doc['Id'].'">';
-                    $porciones = explode(" ", $doc['Fecha']);
-                    $porciones = explode("-", $porciones[0]);
-                    echo $porciones[0]."/".$porciones[1];
-                    echo '</a>';
-                    echo '</td>';*/
+                    echo '</td>';
                     echo '<td>';
                     echo $doc['Salario'];
                     $recibosDeAguinaldos[$i]['TotalBruto']=round(($doc['Salario']),2);
@@ -274,7 +258,7 @@ $docs=ejecutarConsulta($consulta);
 
                         echo '
                         <td>
-                            <form action="#recibo_aguinaldo_pdf_sinrut.php" method="post">
+                            <form action="#" method="post">
                                 <input type="text" name="ChoferID" Value="'.$doc['Chofer'].'" hidden>
                                 <input type="text" name="Periodo" Value="'.$doc['id'].'" hidden>
                                 <input type="text" name="fecha" Value="'.$recibosDeAguinaldos[$i]['Fecha'].'" hidden>
@@ -335,13 +319,11 @@ $docs=ejecutarConsulta($consulta);
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-        </script>
+    </script>
     <!-- DATATABLES -->
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <!-- BOOTSTRAP -->
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#tablax').DataTable({
@@ -375,7 +357,6 @@ $docs=ejecutarConsulta($consulta);
 </body>
 </html>
 <?php
-//print_r($recibosDeAguinaldos);
 $sql = "Select * from planilladetrabajo where Concepto='Aguinaldo SR' and ChoferID=".$recibosDeAguinaldos[0]['ChoferID'];
 $recivosExistentes=ejecutarConsulta($sql);
 $i=0;
@@ -403,8 +384,6 @@ foreach($recibosDeAguinaldos as $recibo)
     {
         $sql="UPDATE `planilladetrabajo` set TotalBruto='".$recibo['TotalBruto']."' where Concepto='".$recibo['Concepto']."' and ChoferID='".$recibo['ChoferID']."' and Fecha='".$recibo['Fecha']."' and EmpresaID='".$recibo['EmpresaID']."';";
     }
-    //echo $sql;
     Insert($sql);
 }
-//print_r($recibosDeAguinaldos);
 ?>

@@ -1,12 +1,7 @@
 <script>
     function confirmacion() {
         var respuesta = confirm("¿Desea realmente borrar el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return respuesta;
     }
 </script>
 
@@ -27,10 +22,8 @@ function btnEliminar($doc,$chofer)
 
 if(isset($_POST['doc']))
 {
-  //print_r($_POST);
   $sql="Delete from documentos where Id=".$_POST['doc'];
   Insert($sql);
-
 }
 
 $consulta="Select * from documentos where Chofer=".$_GET['chofer'];
@@ -42,15 +35,13 @@ $nombre=ejecutarConsulta($consulta);
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
@@ -81,17 +72,13 @@ $nombre=ejecutarConsulta($consulta);
     <title>Paginacion</title>
 </head>
 <body>
-
-
 <div class="container" style="margin-top: 10px;padding: 5px">
 <div class="title"><?php echo $nombre[0][0]; ?></div>
 </div>
-
     <div class="container" style="margin-top: 10px;padding: 5px">
     <table id="tablax" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <th>Detalle</th>
-            <!--<th>Empresa</th>-->
             <th>Expedición</th>
             <th>Vencimiento</th>
             <th>Opci&oacute;n</th>
@@ -115,11 +102,6 @@ $nombre=ejecutarConsulta($consulta);
                     <img src="img/lapiz.png" title="Editar" width="20" height="20"></a>';
                     
                     echo btnEliminar($doc['Id'],$doc['Chofer']);
-                    /*
-                    echo '
-                    <a href="choferesDocumentos.php?doc='.$doc['Id'].'"  onclick="return confirmacion()">
-                    <img src="img/del.png" title="Eliminar" width="30" height="30"></a>
-                    ';*/
                     echo '</td></tr>';                 
                 }
             ?>
@@ -131,13 +113,11 @@ $nombre=ejecutarConsulta($consulta);
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-        </script>
+    </script>
     <!-- DATATABLES -->
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <!-- BOOTSTRAP -->
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#tablax').DataTable({
@@ -171,9 +151,7 @@ $nombre=ejecutarConsulta($consulta);
     
     <center>
       <form action='documentosEditar.php' method='POST'>
-      <input type='hidden' name='chofer' value='
-                  <?php echo $_GET['chofer']; ?>
-      '>
+      <input type='hidden' name='chofer' value='<?php echo $_GET['chofer']; ?>'>
       <input type='image' name='Agregar' value='Agregar' src='img/add.png' title='Agregar Nuevo' width='60' height='60' align="centre">
       </form>
     </center>

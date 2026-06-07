@@ -1,24 +1,20 @@
 <?php
-//include 'index.php';
 session_start();
 
 include 'funciones.php';
-//Id
 $sql = "SELECT * FROM planilladetrabajo,empresa,chofer WHERE empresa.id=planilladetrabajo.EmpresaID and chofer.id=planilladetrabajo.ChoferID and `planilladetrabajo`.`Id`='".$_GET['rsid']."';";
 
 $datos=ejecutarConsulta($sql);
 
-//print_r($datos[0]['Fecha']);
 
-if(true)
-{
-    $_SESSION['empresa']=$datos[0]["NumeroDeRUT"];
-    
-    $consulta="Select NumEmpresa from movil where NumRut='".$_SESSION['empresa']."';";
-    $arraySQL=ejecutarConsulta($consulta);
-@    $_SESSION["EmpresaPatronal"]= $arraySQL[0][0];
 
-}
+$_SESSION['empresa']=$datos[0]["NumeroDeRUT"];
+
+$consulta="Select NumEmpresa from movil where NumRut='".$_SESSION['empresa']."';";
+$arraySQL=ejecutarConsulta($consulta);
+@$_SESSION["EmpresaPatronal"]= $arraySQL[0][0];
+
+
 
 $consulta='SELECT * FROM `empresa` WHERE `NumeroDeRUT`="'.$_SESSION['empresa'].'"';
 $EmpresaDatos = ejecutarConsulta($consulta);
@@ -30,30 +26,15 @@ $todosLosMoviles=ejecutarConsulta($consulta);
 $inicio = date("Y-m-01");
 $fin = date("Y-m-t");
 
-/*
-if(isset($_SESSION["desde"]))
-{
-  $inicio = $_SESSION["desde"];
-  $fin = $_SESSION["hasta"];
-  
-  //$fecha=explode("-",date("Y-m-d",$inicio));
-  
-  $inicio = strtotime($inicio."- 1 days");
-  $fin = strtotime($fin."+ 1 days");
-}
-*/
 
 $empresaID=$EmpresaDatos[0]["id"];
 
 $sql = "SELECT * FROM `planilladetrabajo` WHERE Fecha BETWEEN '$inicio 00:00:00' AND '$fin 23:59:00' AND EmpresaID ='$empresaID' AND Concepto = 'Recibo Sueldo'";
-//echo "$sql";
 $PlanillaDeTrabajo=ejecutarConsulta($sql);
 
-//print_r($inicio);
 $fecha=explode("-",$inicio);
 
 
-//echo " " . $fecha[0];
 $meces["01"]="Enero";
 $meces["02"]="Febrero";
 $meces["03"]="Marzo";
@@ -79,7 +60,6 @@ else
   $sql = "SELECT * FROM `recibodetallerw` WHERE `recibodetallerw`.`IdRs`='".$_GET["rsid"]."'";
 }
 
-//echo "$sql";
 $reciboSueldo=ejecutarConsulta($sql);
 
 $nomDeChofer=explode(",",$datos[0]['Nombre']);
@@ -175,14 +155,7 @@ div.relative2 {
 .interlineado { line-height: 150%;} 
 
 body {
-    background: linear-gradient(#ff0000, #000000);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-image: url("./img/favicon.png");
-    background-repeat: no-repeat, repeat;
     background-color: #cccccc;
-    background-size:contain;
-    background-position: center;
   }
 
 
@@ -259,7 +232,7 @@ $fff=explode("-",$_SESSION["hasta"]);
 
 <table border="1" calss="ex">
     <tr>
-    <td colspan="3"> <img src="./img/favicon.png" class="logo"> <B>AdminTax | &nbsp; LIQUIDACIÓN CORRESPONDIENTE A: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <?php echo $meces[$fff[1]]." /  ".$fff[0]; ?></td><td class="cons"><b>RECIBO DE SUELDO</td>
+    <td colspan="3"> <B>AdminTax | &nbsp; LIQUIDACIÓN CORRESPONDIENTE A: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <?php echo $meces[$fff[1]]." /  ".$fff[0]; ?></td><td class="cons"><b>RECIBO DE SUELDO</td>
     </tr>
     <tr>
     <td width='48%'>
@@ -392,7 +365,6 @@ $fff=explode("-",$_SESSION["hasta"]);
                         echo "$ ".$totalHaberes;
                         echo "</tr><tr>";                    
                     }        
-                    //print_r($row);
                 }            
             }
             ?>
@@ -460,7 +432,7 @@ $fff=explode("-",$_SESSION["hasta"]);
 
 <table border="1" calss="ex">
     <tr>
-    <td colspan="3"> <img src="./img/favicon.png" class="logo"> <B>AdminTax | &nbsp; LIQUIDACIÓN CORRESPONDIENTE A: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <?php echo $meces[$fff[1]]." /  ".$fff[0]; ?></td><td class="cons"><b>RECIBO DE SUELDO</td>
+    <td colspan="3"> <B>AdminTax | &nbsp; LIQUIDACIÓN CORRESPONDIENTE A: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <?php echo $meces[$fff[1]]." /  ".$fff[0]; ?></td><td class="cons"><b>RECIBO DE SUELDO</td>
     </tr>
     <tr>
     <td width='48%'>
@@ -593,7 +565,6 @@ $fff=explode("-",$_SESSION["hasta"]);
                         echo "$" . $totalHaberes;
                         echo "</tr><tr>";                    
                     }        
-                    //print_r($row);
                 }            
             }
             ?>

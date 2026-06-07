@@ -5,7 +5,6 @@ $doc=[];
 $consulta="SELECT * FROM empresa";
 $empresas = ejecutarConsulta($consulta);
 
-//print_r($_POST);
 if ((isset($_POST['detalle'])))
 {
   if ($_POST['id']!=""){
@@ -14,7 +13,6 @@ if ((isset($_POST['detalle'])))
     `FechaExpedicion`='".$_POST['FechaExpedicion']."', 
     `FechaVencimiento`='".$_POST['FechaVencimiento']."' WHERE 
     `id`='".$_POST['id']."';";
-    //echo $consulta;
     Insert($consulta);
   }else
   {
@@ -39,15 +37,14 @@ if (isset($_POST['chofer']))
   $doc=ejecutarConsulta($consulta); 
 }
 
-//print_r($chofer[0]);
 ?>
+
+
 <!DOCTYPE html>
-<!-- Created By CodingLab - www.codinglabweb.com -->
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8">
     <title> Responsive Registration Form | CodingLab </title>
-    <link rel="stylesheet" href="style.css">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
@@ -192,10 +189,8 @@ form .user-details .input-box{
    </head>
 <body>
 <div class="container" style="margin-top: 10px;padding: 5px">
-<div class="title"><?php if (isset($doc[0])) echo $doc[0]['Nombre']; ?></div>
+  <div class="title"><?php if (isset($doc[0])) echo $doc[0]['Nombre']; ?></div>
 </div>
-
-
 <div class="container">    
     <div class="content">
       <form action="#" method="POST">

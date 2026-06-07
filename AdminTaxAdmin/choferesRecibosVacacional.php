@@ -1,12 +1,7 @@
 <script>
     function confirmacion() {
         var respuesta = confirm("¿Desea realmente borrar el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return respuesta;
     }
 </script>
 
@@ -26,7 +21,6 @@ function btnEliminar($doc,$chofer)
 
 if(isset($_POST['doc']))
 {
-  //print_r($_POST);
   $sql="Delete from documentos where Id=".$_POST['doc'];
   Insert($sql);
 
@@ -71,7 +65,6 @@ function GetPromAnterior($chofer,$fecha)
     return $promAnterior;
 }
 
-//if(isset($_GET[""]))//&LicenciaGozada=14&estado=No
 
 $consulta="Select * 
 from 
@@ -86,28 +79,6 @@ and planilladetrabajo.Fecha>=chofer.FechaDeIngreso
 GROUP BY licencias.id  
 ORDER BY `planilladetrabajo`.`Fecha` DESC";
 
-/*
-$campos="
-chofer.FechaDeIngreso as Ingreso,
-chofer.HsExtra as HsExtra,
-`planilladetrabajo`.`Fecha` as Fecha,
-`planilladetrabajo`.ChoferID,
-`planilladetrabajo`.Aporte as Aporte,
-max(`planilladetrabajo`.Id) as PlanillaId,
-Truncate(sum(`planilladetrabajo`.Id),2) as Id,
-Truncate(sum(`planilladetrabajo`.Comunes_MontoAbonado),2) as Recaudacion,
-Truncate(sum(`planilladetrabajo`.Comunes_MontoAbonado),2) as Recaudacion2,
-Truncate((sum(`planilladetrabajo`.Comunes_MontoAbonado*`planilladetrabajo`.Aporte/100)+sum(`planilladetrabajo`.Feriados_MontoAbonado*`planilladetrabajo`.Aporte/100)),2) as SueldoBaseParaAportacion,
-Truncate(sum(`planilladetrabajo`.RemuneracionTotal),2) as RemuneracionTotal,
-Truncate(sum(`planilladetrabajo`.Comunes_Jornales),2) as Comunes_Jornales,
-Truncate(sum(`planilladetrabajo`.FeriadosNoLaborables_Cant),2) as FeriadosNoLaborables_Cant,
-Truncate(sum(`planilladetrabajo`.Comunes_MontoAbonado),2) as SueldoBaseParaAportacion2,
-`planilladetrabajo`.EmpresaID as EmpresaID,
-`planilladetrabajo`.LicenciaGozada as LicenciaGozada,
-licencias.id as id,
-licencias.desde as desde,
-licencias.hasta as hasta
-";*/
 
 $campos="
 chofer.FechaDeIngreso as Ingreso,
@@ -133,14 +104,9 @@ licencias.hasta as hasta
 
 
 
-
-
-
 $consulta=str_replace("*", $campos, $consulta);
 $consulta2=str_replace("and Concepto='Recibo Sueldo'", "and Concepto='Vacacional'", $consulta);
-//echo $consulta2;
 
-//echo $consulta;
 
 $docs=ejecutarConsulta($consulta);
   
@@ -171,9 +137,6 @@ $recibosDeAguinaldos=[];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
@@ -216,7 +179,6 @@ $recibosDeAguinaldos=[];
     <table id="tablax" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <th>Fecha Hasta</th>
-            <!--<th>Empresa</th>-->
             <th>Vacacional(Aportación)</th>
             <th>Licencia(Aportación)</th>
             <?php if ($masInfo){echo '
@@ -226,7 +188,6 @@ $recibosDeAguinaldos=[];
             <th>jornal Prom.</th>
             <th>Empresa</th>
             <th>Fecha Desde</th>';
-            //ReciboRetroactivosAplicar.php?chofer=
             }?>
             <th>Recibos</th>
 
@@ -243,14 +204,7 @@ $recibosDeAguinaldos=[];
                     echo $porciones['0'];
                     $recibosDeAguinaldos[$i]['Fecha']=$porciones['0']." 23:59:59";
                     $recibosDeAguinaldos[$i]['Concepto']="Vacacional";
-                    echo '</td>';/*
-                    echo '<td>';
-                    echo '<a href="recibo.php?rsid='.$doc['Id'].'">';
-                    $porciones = explode(" ", $doc['Fecha']);
-                    $porciones = explode("-", $porciones[0]);
-                    echo $porciones[0]."/".$porciones[1];
-                    echo '</a>';
-                    echo '</td>';*/
+                    echo '</td>';
                     echo '<td>';
                     
                     $jornales=$doc['Comunes_Jornales']+$doc['FeriadosNoLaborables_Cant'];
@@ -266,7 +220,6 @@ $recibosDeAguinaldos=[];
                     $temp=$jornales;
                     $jornales=round(($jornales*0.0664),2);
 
-                    //echo round(($doc['SueldoBaseParaAportacion'])/$jornales,2)." Vacacional(Aportación)".$prom;//TotalBruto
                     echo round($prom*$jornales,2);//TotalBruto
                     $recibosDeAguinaldos[$i]['TotalBruto']=round($prom*$jornales,2);
                     $recibosDeAguinaldos[$i]['Comunes_Jornales']=$temp;
@@ -289,10 +242,7 @@ $recibosDeAguinaldos=[];
                         echo '</td>';
                         echo '<td>';
                         echo $doc['Recaudacion'];
-                        echo '</td>';/*
-                        echo '<td>';//PlanillaId
-                        echo $doc['LicenciaGozada'];
-                        echo '</td>';*/
+                        echo '</td>';
                         echo '<td>';
                         $jornales=$doc['Comunes_Jornales']+$doc['FeriadosNoLaborables_Cant'];
                         echo round(($jornales*0.0664),2).' ('.$jornales.')';
@@ -343,13 +293,11 @@ $recibosDeAguinaldos=[];
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-        </script>
+    </script>
     <!-- DATATABLES -->
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <!-- BOOTSTRAP -->
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#tablax').DataTable({
@@ -401,7 +349,6 @@ $recibosDeAguinaldos=[];
 </body>
 </html>
 <?php
-//print_r($recibosDeAguinaldos);
 $sql = "Select * from planilladetrabajo where Concepto='Vacacional' and ChoferID=".$recibosDeAguinaldos[0]['ChoferID'];
 $recivosExistentes=ejecutarConsulta($sql);
 $i=0;
@@ -429,8 +376,6 @@ foreach($recibosDeAguinaldos as $recibo)
     {
         $sql="UPDATE `planilladetrabajo` set TotalBruto='".$recibo['TotalBruto']."', SueldoBaseParaAportacion=0, Comunes_Jornales='".$recibo['Comunes_Jornales']."' where Concepto='".$recibo['Concepto']."' and ChoferID='".$recibo['ChoferID']."' and Fecha='".$recibo['Fecha']."' and EmpresaID='".$recibo['EmpresaID']."';";
     }
-    //echo $sql;
     Insert($sql);
 }
-//print_r($recibosDeAguinaldos);
 ?>

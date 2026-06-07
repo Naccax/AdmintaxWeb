@@ -2,8 +2,6 @@
 <?php 
 include('index.php'); 
 
-//print_r($_POST);
-
 
 $consulta="SELECT * FROM movil";//moviles
 $movilestemp = ejecutarConsulta($consulta);
@@ -107,7 +105,6 @@ else
 
 $todosLosMoviles=ejecutarConsulta($consulta);
 
-//print_r($_POST);
 
 if (isset($_POST["Más_detalles"]))
 {
@@ -139,9 +136,6 @@ if (isset($_POST["Ver_Entregas"]))
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
@@ -157,21 +151,21 @@ if (isset($_POST["Ver_Entregas"]))
     <title>Paginacion</title>
 </head>
 <body>
-    <div class="container" style="margin-top: 10px;padding: 5px">
+<div class="container" style="margin-top: 10px;padding: 5px">
     
 <form action="#" method="POST">
 <input type="submit" name="Mostrar Todos" value="Mostrar Todos" class="btn btn-danger" >
 <?php 
             
-            if(@$mas){ 
-               echo '<input type="submit" name="Menos detalles" value="Menos detalles" class="btn btn-success" >';
-            }else
-            {
-                echo '<input type="submit" name="Más detalles" value="Más detalles" class="btn btn-success" >';
-            }
-            echo '&nbsp;<input type="submit" name="Habilitar Editar" value="Habilitar Editar" class="btn btn-success">';
-            echo '&nbsp;<input type="submit" name="Ver Entregas" value="Ver Entregas" class="btn btn-success">';
-            echo '&nbsp;<input type="submit" name="Actualizar Cálculos" value="Actualizar Cálculos" class="btn btn-primary">';
+if(@$mas){ 
+    echo '<input type="submit" name="Menos detalles" value="Menos detalles" class="btn btn-success" >';
+}else
+{
+    echo '<input type="submit" name="Más detalles" value="Más detalles" class="btn btn-success" >';
+}
+echo '&nbsp;<input type="submit" name="Habilitar Editar" value="Habilitar Editar" class="btn btn-success">';
+echo '&nbsp;<input type="submit" name="Ver Entregas" value="Ver Entregas" class="btn btn-success">';
+echo '&nbsp;<input type="submit" name="Actualizar Cálculos" value="Actualizar Cálculos" class="btn btn-primary">';
 ?>
 &nbsp;
 <a href="multaGuardar.php"><button type="button" class="btn btn-success">Agregar Nueva</button></a>   
@@ -300,13 +294,11 @@ if (isset($_POST["Ver_Entregas"]))
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-        </script>
+    </script>
     <!-- DATATABLES -->
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <!-- BOOTSTRAP -->
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#tablax').DataTable({

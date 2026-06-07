@@ -13,23 +13,21 @@ if (isset($_POST['CI']))
     $hsExtra="false";
 
 
-    //print_r($_POST);
     $consulta=" INSERT INTO `chofer` (`id`, `ci`, `Nombre`, `patronal`, `celeritas`, `direccion`, `contacto`, `contacto2`, `Sueldo`, `tipoAporte`, `Retención`, `HsExtra`, `FechaNacimiento`, `FechaDeIngreso`, `RUT`, `NombreEnPlanilla`) VALUES";
     $values="(NULL,'".$_POST['CI']."','".$_POST['Nombre']."','".$_POST['Patronal']."','".$_POST['Celeritas']."','".$_POST['Direccion']."','".$_POST['contacto']."','".$_POST['contacto2']."','".$_POST['Sueldo']."','".$_POST['tipoAporte']."','".$_POST['Retencion']."','".$hsExtra."','".$_POST['FechaNacimiento']."','".$_POST['FechaDeIngreso']."','".$_POST['empresa']."','".$_POST['NombreEnPlanilla']."')";
     $consulta=$consulta.$values;
     Insert($consulta);
-
     
-  }
+}
 
 ?>
+
+
 <!DOCTYPE html>
-<!-- Created By CodingLab - www.codinglabweb.com -->
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8">
     <title> Responsive Registration Form | CodingLab </title>
-    <link rel="stylesheet" href="style.css">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');

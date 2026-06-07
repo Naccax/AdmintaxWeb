@@ -1,12 +1,7 @@
 <script>
     function confirmacion() {
         var respuesta = confirm("¿Desea realmente borrar el registro?");
-        if (respuesta == true) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return respuesta;
     }
 </script>
 
@@ -26,10 +21,8 @@ function btnEliminar($doc,$chofer)
 
 if(isset($_POST['doc']))
 {
-  //print_r($_POST);
   $sql="Delete from documentos where Id=".$_POST['doc'];
   Insert($sql);
-
 }
 
 $sql="UPDATE planilladetrabajo set Salario29=`Recaudacion`*0.29;";
@@ -58,15 +51,13 @@ if(isset($_POST['masInfo']))
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- DATATABLES -->
-    <!--  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"> -->
-    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
@@ -97,10 +88,8 @@ if(isset($_POST['masInfo']))
     <title>Paginacion</title>
 </head>
 <body>
-
-
 <div class="container" style="margin-top: 10px;padding: 5px">
-<div class="title"><?php echo $nombre[0][0]; ?></div>
+    <div class="title"><?php echo $nombre[0][0]; ?></div>
 </div>
 
     <div class="container" style="margin-top: 10px;padding: 5px">
@@ -109,7 +98,6 @@ if(isset($_POST['masInfo']))
     <table id="tablax" class="table table-striped table-bordered" style="width:100%">
         <thead>
             <th>Fecha</th>
-            <!--<th>Empresa</th>-->
             <th>Recaudación</th>
             <th>Salario Bruto</th>
             <?php if ($masInfo){echo '
@@ -118,7 +106,6 @@ if(isset($_POST['masInfo']))
             <th>Salario(Aportación)</th>
             <th>jornal Prom.</th>
             <th>Empresa</th>';
-            //ReciboRetroactivosAplicar.php?chofer=
             }?>
         </thead>
         <tbody>
@@ -174,13 +161,11 @@ if(isset($_POST['masInfo']))
     <!-- JQUERY -->
     <script src="https://code.jquery.com/jquery-3.4.1.js"
         integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
-        </script>
+    </script>
     <!-- DATATABLES -->
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <!-- BOOTSTRAP -->
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js">
-    </script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#tablax').DataTable({
