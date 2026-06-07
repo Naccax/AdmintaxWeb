@@ -1,5 +1,4 @@
 <?php
-//include 'index.php';
 session_start();
 if(!(isset($_SESSION['empresa'])))
 {
@@ -32,10 +31,8 @@ if(isset($_SESSION["desde"]))
 $empresaID=$EmpresaDatos[0]["id"];
 
 $sql = "SELECT * FROM `planilladetrabajo` WHERE Fecha BETWEEN '$inicio 00:00:00' AND '$fin 23:59:00' AND EmpresaID ='$empresaID' AND Concepto = 'Recibo Sueldo'";
-//echo "$sql";
 $PlanillaDeTrabajo=ejecutarConsulta($sql);
 
-//print_r($inicio);
 $fecha=explode("-",$inicio);
 
 
@@ -58,7 +55,6 @@ $cont=0;
 
 
 $sql = "SELECT * FROM `recibodetallerw` WHERE `recibodetallerw`.`IdRs`='".$_GET["RSID"]."'";
-//echo "$sql";
 $reciboSueldo=ejecutarConsulta($sql);
 
 

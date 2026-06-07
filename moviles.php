@@ -1189,17 +1189,4 @@ if((isset($_GET['plate'])))
 
 
 
-<?php
-
-//EFECTIVO A ENTREGAR (Descontando Viáticos y Feriados)
-/*
-  echo "<br><br><br>";
-  print_r($ListaGF);
-  echo "<br><br><br>";
-  print_r($ListaGV);
-  echo "<br><br><br>";
-  print_r($ListaMV);
-  echo "<br><br><br>";
-  print_r($listaOtrosGastos);*/
-}
-?>
+<?php }?>
