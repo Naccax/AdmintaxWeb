@@ -139,7 +139,7 @@ if (isset($_GET['Id'])){
                 echo $row['TotalRecibido'];
                 echo "</td>";
                 echo "<td>";
-                echo '<a href="ReciboSueldo.php?RSID=',$row['Id'],'&CHID=',$row['ChoferID'],'">';
+                echo '<a href="ReciboSueldo.php?RSID=',$row['Id'],'&CHID=',$row['ChoferID'],'&Fecha=',$row['Fecha'],'">';
                 echo "VER&#128269;";
                 echo '</a>';
                 echo "</td>";
@@ -177,7 +177,7 @@ if (isset($_GET['Id'])){
                 echo $row['TotalRecibido'];
                 echo "</td>";
                 echo "<td>";
-                echo '<a href="ReciboSueldo.php?RSID=',$row['Id'],'&CHID=',$row['ChoferID'],'">';
+                echo '<a href="ReciboSueldo.php?RSID=',$row['Id'],'&CHID=',$row['ChoferID'],'&Fecha=',$row['Fecha'],'">';
                 echo "VER&#128269;";
                 echo '</a>';
                 echo "</td>";
