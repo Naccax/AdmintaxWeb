@@ -1,0 +1,11 @@
+Pestañas del Diablo:
+
+PlanillaDeTrabajo.php
+PlanillaDeTrabajo2.php
+recaudaciones.php
+recaudaciones3.php
+recibo.php
+RecibosDeSueldo.php
+ResumenDeEmpresa.php
+resumenEmpresa.php
+ResumenFinalDeEmpresa.ok.php

@@ -1,51 +1,36 @@
-
-
 <?php
- 
-
- include 'funciones.php';
- session_start();
-
+include 'index.php';
 
 
 if((isset($_GET['plate'])))
 {
   $movil=$_GET['plate'];
-  ?>
-  <div class="container text-center abs-center">
-  <h1>Resumen de estado del M&oacute;vil <?php echo $_GET['plate']; ?></h1>
-  <hr>
-  <form action="?plate=<?php echo $_GET['plate']; ?>" method="post">
-  Desde : 
-  <input type='date' id='desde' name="desde" value='<?php echo date("Y-m-01");?>'>
-  Hasta: 
-  <input type='date' id='hasta' name="hasta" value='<?php echo date("Y-m-t");?>'>&nbsp;&nbsp;&nbsp;
-  <button type="sumit" class="btn btn-primary">Buscar</button>
-</form>
-  <hr>
-  </div>
-
+?>
 
   <?php
-
   
   $consulta="SELECT * FROM `movil` WHERE `NumRut`='".$_SESSION['empresa']."';";
   $todosLosMoviles=ejecutarConsulta($consulta);
 
  
-  $inicio = date("Y-m-01");
-  $fin = date("Y-m-t");
-
-  if(isset($_POST["desde"]))
-  {
-    $inicio = $_POST["desde"];
-    $fin = $_POST["hasta"];
+  if (isset($_POST['desde'], $_POST['hasta'])) {
+    $_SESSION['desde'] = $_POST['desde'];
+    $_SESSION['hasta'] = $_POST['hasta'];
   }
+
+  if (!isset($_SESSION['desde'])) {
+      $_SESSION['desde'] = date('Y-m-01');
+  }
+
+  if (!isset($_SESSION['hasta'])) {
+      $_SESSION['hasta'] = date('Y-m-t');
+  }
+
+  $inicio = $_SESSION['desde'];
+  $fin = $_SESSION['hasta'];
   
   $sql="SELECT * FROM recaudaciones WHERE `fecha` BETWEEN '$inicio' AND '$fin' AND `Movil`='$movil'  ORDER BY `recaudaciones`.`HoraEntrada` ASC;";
-  //echo "$sql";
   $movimientos=ejecutarConsulta($sql);
-  //print_r($movimientos);
   
   $contador['id']=0;
   $contador['fecha']=0;
@@ -281,13 +266,9 @@ if((isset($_GET['plate'])))
     }
   }
 
-//print_r($choferes[6]['Nombre']);
 
   foreach($listarecaudaciones as $row)
   {
-      
-    //$contador['id']=$contador['']+$row['id'];
-    //$contador['fecha']=$contador['']+$row[''];
     if(($contador['KmEntrada']==0) or ($contador['KmEntrada']>$row['KmEntrada']))
     {
       $contador['KmEntrada']=$row['KmEntrada'];
@@ -302,12 +283,6 @@ if((isset($_GET['plate'])))
       $listaDeKm[]=$row['KmSalida'];
     }
 
-    //$contador['Chofer']=$contador['']+$row[''];
-    //$contador['Movil']=$contador['']+$row[''];
-    //$contador['HoraEntrada']=$contador['']+$row[''];
-    //$contador['HoraSalida']=$contador['']+$row[''];
-    //$contador['Sueldo']=$contador['']+$row[''];
-    //$contador['BPS']=$contador['']+$row[''];
     $contador['Recaudado']=$contador['Recaudado']+$row['Recaudado'];
     $contador['Salario']=$contador['Salario']+$row['Salario'];
     $contador['Laudo']=$contador['Laudo']+$row['Laudo'];
@@ -342,31 +317,22 @@ if((isset($_GET['plate'])))
     $contador['Efectivo']=$contador['Efectivo']+$row['Efectivo'];
     $contador['Gastos']=$contador['Gastos']+$row['Gastos'];
     $contador['Liquido']=$contador['Liquido']+$row['Liquido'];
-    //$contador['Observaciones']=$contador['Observaciones']+$row['Observaciones'];
     $contador['Kilometros']=$contador['Kilometros']+$row['Kilometros'];
     $contador['OtraRetencion']=$contador['OtraRetencion']+$row['OtraRetencion'];
     $contador['AporteReal']=$contador['AporteReal']+$row['AporteReal'];
 
   }
 
-  $contador['KmEntrada']= min($listaDeKm);
-  $contador['KmSalida']= max($listaDeKm);
-  /*
-  echo "<br><br>";
-  print_r($listaDeKm);
-  echo "<br><br>";
-  echo $contador['KmEntrada'];
-  echo "<br><br>";
-  echo $contador['KmSalida'];*/
+  if (!empty($listaDeKm)){
+    $contador['KmEntrada']= min($listaDeKm);
+    $contador['KmSalida']= max($listaDeKm);
+  }
   
   $pagosElecrtonicos=$contador['H13Patronal']+$contador['R12Celeritas']+$contador['MerPagoCeleritas']+$contador['H13Especiales']+$contador['MercPago']+$contador['OcaCel']+$contador['Bits']+$contador['Tarjetas']+$contador['MercPagoPersonal']+$contador['CabifyTarjetas'];
 
 
   foreach($ListaGF as $row)
   {
-      
-    //$contadorGF['id']=$contadorGF['']+$row['id'];
-    //$contadorGF['fecha']=$contadorGF['']+$row[''];
     if(($contadorGF['KmEntrada']==0) or ($contadorGF['KmEntrada']>$row['KmEntrada']))
     {
       $contadorGF['KmEntrada']=$row['KmEntrada'];
@@ -376,12 +342,6 @@ if((isset($_GET['plate'])))
       $contadorGF['KmSalida']=$row['KmSalida'];
     }
 
-    //$contadorGF['Chofer']=$contadorGF['']+$row[''];
-    //$contadorGF['Movil']=$contadorGF['']+$row[''];
-    //$contadorGF['HoraEntrada']=$contadorGF['']+$row[''];
-    //$contadorGF['HoraSalida']=$contadorGF['']+$row[''];
-    //$contadorGF['Sueldo']=$contadorGF['']+$row[''];
-    //$contadorGF['BPS']=$contadorGF['']+$row[''];
     $contadorGF['Recaudado']=$contadorGF['Recaudado']+$row['Recaudado'];
     $contadorGF['Salario']=$contadorGF['Salario']+$row['Salario'];
     $contadorGF['Laudo']=$contadorGF['Laudo']+$row['Laudo'];
@@ -411,7 +371,6 @@ if((isset($_GET['plate'])))
     $contadorGF['Efectivo']=$contadorGF['Efectivo']+$row['Efectivo'];
     $contadorGF['Gastos']=$contadorGF['Gastos']+$row['Gastos'];
     $contadorGF['Liquido']=$contadorGF['Liquido']+$row['Liquido'];
-    //$contadorGF['Observaciones']=$contadorGF['Observaciones']+$row['Observaciones'];
     $contadorGF['Kilometros']=$contadorGF['Kilometros']+$row['Kilometros'];
     $contadorGF['MercPagoPersonal']=$contadorGF['MercPagoPersonal']+$row['MercPagoPersonal'];
     $contadorGF['CabifyTarjetas']=$contadorGF['CabifyTarjetas']+$row['CabifyTarjetas'];
@@ -419,251 +378,249 @@ if((isset($_GET['plate'])))
     $contadorGF['AporteReal']=$contadorGF['AporteReal']+$row['AporteReal'];
 
   }
+
   if(isset($ListaGV))
-  foreach($ListaGV as $row)
-  {
-      
-    //$contadorGV['id']=$contadorGV['']+$row['id'];
-    //$contadorGV['fecha']=$contadorGV['']+$row[''];
-    if(($contadorGV['KmEntrada']==0) or ($contadorGV['KmEntrada']>$row['KmEntrada']))
+    foreach($ListaGV as $row)
     {
-      $contadorGV['KmEntrada']=$row['KmEntrada'];
-    }
-    if($contadorGV['KmSalida']<$row['KmSalida'])
-    {
-      $contadorGV['KmSalida']=$row['KmSalida'];
+      if(($contadorGV['KmEntrada']==0) or ($contadorGV['KmEntrada']>$row['KmEntrada']))
+      {
+        $contadorGV['KmEntrada']=$row['KmEntrada'];
+      }
+      if($contadorGV['KmSalida']<$row['KmSalida'])
+      {
+        $contadorGV['KmSalida']=$row['KmSalida'];
+      }
+
+      $contadorGV['Recaudado']=$contadorGV['Recaudado']+$row['Recaudado'];
+      $contadorGV['Salario']=$contadorGV['Salario']+$row['Salario'];
+      $contadorGV['Laudo']=$contadorGV['Laudo']+$row['Laudo'];
+      $contadorGV['Comision']=$contadorGV['Comision']+$row['Comision'];
+      $contadorGV['ViaticoNoCobrado']=$contadorGV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
+      $contadorGV['ViaticoCobrado']=$contadorGV['ViaticoCobrado']+$row['ViaticoCobrado'];
+      $contadorGV['FeriadoNoCobrado']=$contadorGV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
+      $contadorGV['FeriadoCobrado']=$contadorGV['FeriadoCobrado']+$row['FeriadoCobrado'];
+      $contadorGV['AporteSalario']=$contadorGV['AporteSalario']+$row['AporteSalario'];
+      $contadorGV['AporteViatico']=$contadorGV['AporteViatico']+$row['AporteViatico'];
+      $contadorGV['AporteFeriado']=$contadorGV['AporteFeriado']+$row['AporteFeriado'];
+      $contadorGV['AporteTotales']=$contadorGV['AporteTotales']+$row['AporteTotales'];
+      $contadorGV['H13Patronal']=$contadorGV['H13Patronal']+$row['H13Patronal'];
+      $contadorGV['R12Celeritas']=$contadorGV['R12Celeritas']+$row['R12Celeritas'];
+      $contadorGV['MerPagoCeleritas']=$contadorGV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
+      $contadorGV['H13Especiales']=$contadorGV['H13Especiales']+$row['H13Especiales'];
+      $contadorGV['MercPago']=$contadorGV['MercPago']+$row['MercPago'];
+      $contadorGV['OcaCel']=$contadorGV['OcaCel']+$row['OcaCel'];
+      $contadorGV['Bits']=$contadorGV['Bits']+$row['Bits'];
+      $contadorGV['Tarjetas']=$contadorGV['Tarjetas']+$row['Tarjetas'];
+      $contadorGV['GasOilPlata']=$contadorGV['GasOilPlata']+$row['GasOilPlata'];
+      $contadorGV['GasOilLitros']=$contadorGV['GasOilLitros']+$row['GasOilLitros'];
+      $contadorGV['Lavado']=$contadorGV['Lavado']+$row['Lavado'];
+      $contadorGV['Gomeria']=$contadorGV['Gomeria']+$row['Gomeria'];
+      $contadorGV['Cabify']=$contadorGV['Cabify']+$row['Cabify'];
+      $contadorGV['Otros']=$contadorGV['Otros']+$row['Otros'];
+      $contadorGV['Efectivo']=$contadorGV['Efectivo']+$row['Efectivo'];
+      $contadorGV['Gastos']=$contadorGV['Gastos']+$row['Gastos'];
+      $contadorGV['Liquido']=$contadorGV['Liquido']+$row['Liquido'];
+      $contadorGV['Kilometros']=$contadorGV['Kilometros']+$row['Kilometros'];
+      $contadorGV['MercPagoPersonal']=$contadorGV['MercPagoPersonal']+$row['MercPagoPersonal'];
+      $contadorGV['CabifyTarjetas']=$contadorGV['CabifyTarjetas']+$row['CabifyTarjetas'];
+      $contadorGV['OtraRetencion']=$contadorGV['OtraRetencion']+$row['OtraRetencion'];
+      $contadorGV['AporteReal']=$contadorGV['AporteReal']+$row['AporteReal'];
+
     }
 
-    //$contadorGV['Chofer']=$contadorGV['']+$row[''];
-    //$contadorGV['Movil']=$contadorGV['']+$row[''];
-    //$contadorGV['HoraEntrada']=$contadorGV['']+$row[''];
-    //$contadorGV['HoraSalida']=$contadorGV['']+$row[''];
-    //$contadorGV['Sueldo']=$contadorGV['']+$row[''];
-    //$contadorGV['BPS']=$contadorGV['']+$row[''];
-    $contadorGV['Recaudado']=$contadorGV['Recaudado']+$row['Recaudado'];
-    $contadorGV['Salario']=$contadorGV['Salario']+$row['Salario'];
-    $contadorGV['Laudo']=$contadorGV['Laudo']+$row['Laudo'];
-    $contadorGV['Comision']=$contadorGV['Comision']+$row['Comision'];
-    $contadorGV['ViaticoNoCobrado']=$contadorGV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
-    $contadorGV['ViaticoCobrado']=$contadorGV['ViaticoCobrado']+$row['ViaticoCobrado'];
-    $contadorGV['FeriadoNoCobrado']=$contadorGV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
-    $contadorGV['FeriadoCobrado']=$contadorGV['FeriadoCobrado']+$row['FeriadoCobrado'];
-    $contadorGV['AporteSalario']=$contadorGV['AporteSalario']+$row['AporteSalario'];
-    $contadorGV['AporteViatico']=$contadorGV['AporteViatico']+$row['AporteViatico'];
-    $contadorGV['AporteFeriado']=$contadorGV['AporteFeriado']+$row['AporteFeriado'];
-    $contadorGV['AporteTotales']=$contadorGV['AporteTotales']+$row['AporteTotales'];
-    $contadorGV['H13Patronal']=$contadorGV['H13Patronal']+$row['H13Patronal'];
-    $contadorGV['R12Celeritas']=$contadorGV['R12Celeritas']+$row['R12Celeritas'];
-    $contadorGV['MerPagoCeleritas']=$contadorGV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
-    $contadorGV['H13Especiales']=$contadorGV['H13Especiales']+$row['H13Especiales'];
-    $contadorGV['MercPago']=$contadorGV['MercPago']+$row['MercPago'];
-    $contadorGV['OcaCel']=$contadorGV['OcaCel']+$row['OcaCel'];
-    $contadorGV['Bits']=$contadorGV['Bits']+$row['Bits'];
-    $contadorGV['Tarjetas']=$contadorGV['Tarjetas']+$row['Tarjetas'];
-    $contadorGV['GasOilPlata']=$contadorGV['GasOilPlata']+$row['GasOilPlata'];
-    $contadorGV['GasOilLitros']=$contadorGV['GasOilLitros']+$row['GasOilLitros'];
-    $contadorGV['Lavado']=$contadorGV['Lavado']+$row['Lavado'];
-    $contadorGV['Gomeria']=$contadorGV['Gomeria']+$row['Gomeria'];
-    $contadorGV['Cabify']=$contadorGV['Cabify']+$row['Cabify'];
-    $contadorGV['Otros']=$contadorGV['Otros']+$row['Otros'];
-    $contadorGV['Efectivo']=$contadorGV['Efectivo']+$row['Efectivo'];
-    $contadorGV['Gastos']=$contadorGV['Gastos']+$row['Gastos'];
-    $contadorGV['Liquido']=$contadorGV['Liquido']+$row['Liquido'];
-    //$contadorGV['Observaciones']=$contadorGV['Observaciones']+$row['Observaciones'];
-    $contadorGV['Kilometros']=$contadorGV['Kilometros']+$row['Kilometros'];
-    $contadorGV['MercPagoPersonal']=$contadorGV['MercPagoPersonal']+$row['MercPagoPersonal'];
-    $contadorGV['CabifyTarjetas']=$contadorGV['CabifyTarjetas']+$row['CabifyTarjetas'];
-    $contadorGV['OtraRetencion']=$contadorGV['OtraRetencion']+$row['OtraRetencion'];
-    $contadorGV['AporteReal']=$contadorGV['AporteReal']+$row['AporteReal'];
-
-  }
   if(isset($ListaMV))
-  foreach($ListaMV as $row)
-  {
+    foreach($ListaMV as $row)
+    {
+      if(($contadorMV['KmEntrada']==0) or ($contadorMV['KmEntrada']>$row['KmEntrada']))
+      {
+        $contadorMV['KmEntrada']=$row['KmEntrada'];
+      }
+      if($contadorMV['KmSalida']<$row['KmSalida'])
+      {
+        $contadorMV['KmSalida']=$row['KmSalida'];
+      }
+
+      $contadorMV['Recaudado']=$contadorMV['Recaudado']+$row['Recaudado'];
+      $contadorMV['Salario']=$contadorMV['Salario']+$row['Salario'];
+      $contadorMV['Laudo']=$contadorMV['Laudo']+$row['Laudo'];
+      $contadorMV['Comision']=$contadorMV['Comision']+$row['Comision'];
+      $contadorMV['ViaticoNoCobrado']=$contadorMV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
+      $contadorMV['ViaticoCobrado']=$contadorMV['ViaticoCobrado']+$row['ViaticoCobrado'];
+      $contadorMV['FeriadoNoCobrado']=$contadorMV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
+      $contadorMV['FeriadoCobrado']=$contadorMV['FeriadoCobrado']+$row['FeriadoCobrado'];
+      $contadorMV['AporteSalario']=$contadorMV['AporteSalario']+$row['AporteSalario'];
+      $contadorMV['AporteViatico']=$contadorMV['AporteViatico']+$row['AporteViatico'];
+      $contadorMV['AporteFeriado']=$contadorMV['AporteFeriado']+$row['AporteFeriado'];
+      $contadorMV['AporteTotales']=$contadorMV['AporteTotales']+$row['AporteTotales'];
+      $contadorMV['H13Patronal']=$contadorMV['H13Patronal']+$row['H13Patronal'];
+      $contadorMV['R12Celeritas']=$contadorMV['R12Celeritas']+$row['R12Celeritas'];
+      $contadorMV['MerPagoCeleritas']=$contadorMV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
+      $contadorMV['H13Especiales']=$contadorMV['H13Especiales']+$row['H13Especiales'];
+      $contadorMV['MercPago']=$contadorMV['MercPago']+$row['MercPago'];
+      $contadorMV['OcaCel']=$contadorMV['OcaCel']+$row['OcaCel'];
+      $contadorMV['Bits']=$contadorMV['Bits']+$row['Bits'];
+      $contadorMV['Tarjetas']=$contadorMV['Tarjetas']+$row['Tarjetas'];
+      $contadorMV['GasOilPlata']=$contadorMV['GasOilPlata']+$row['GasOilPlata'];
+      $contadorMV['GasOilLitros']=$contadorMV['GasOilLitros']+$row['GasOilLitros'];
+      $contadorMV['Lavado']=$contadorMV['Lavado']+$row['Lavado'];
+      $contadorMV['Gomeria']=$contadorMV['Gomeria']+$row['Gomeria'];
+      $contadorMV['Cabify']=$contadorMV['Cabify']+$row['Cabify'];
+      $contadorMV['Otros']=$contadorMV['Otros']+$row['Otros'];
+      $contadorMV['Efectivo']=$contadorMV['Efectivo']+$row['Efectivo'];
+      $contadorMV['Gastos']=$contadorMV['Gastos']+$row['Gastos'];
+      $contadorMV['Liquido']=$contadorMV['Liquido']+$row['Liquido'];
+      $contadorMV['Kilometros']=$contadorMV['Kilometros']+$row['Kilometros'];
+      $contadorMV['MercPagoPersonal']=$contadorMV['MercPagoPersonal']+$row['MercPagoPersonal'];
+      $contadorMV['CabifyTarjetas']=$contadorMV['CabifyTarjetas']+$row['CabifyTarjetas'];
+      $contadorMV['OtraRetencion']=$contadorMV['OtraRetencion']+$row['OtraRetencion'];
+      $contadorMV['AporteReal']=$contadorMV['AporteReal']+$row['AporteReal'];
+
+    }
+
+    $sql = "SELECT id, Nombre FROM `chofer`;";
+    $choferesRecaudaciones = ejecutarConsulta($sql);
+    $choferesRecaudacionesID = [];
+    foreach ($choferesRecaudaciones as $row) {
+        $choferesRecaudacionesID[$row['id']] = $row;
+    }
+
+  ?>
+
+
+<div class="container text-center abs-center">
+    <h1>Resumen de estado del M&oacute;vil <?php echo $_GET['plate']; ?></h1>
+    <hr>
+    <form action="?plate=<?php echo $_GET['plate']; ?>" method="post">
+      Desde : 
+      <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
+      Hasta: 
+      <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
+      <button type="sumit" class="btn btn-primary">Buscar</button>
+    </form>
+    <hr>
+  </div>
+
+
+  <br><br>
+  <?php if(!empty($listarecaudaciones)){?>
+  <table style="width:4000px;" border='1'>
+      <thead>
+      <tr style="background-color: black;
+      color: white;">
+      <th>Fecha entrada</th> 
+      <th>Fecha salida</th> 
+      <th>Chofer</td> 
+      <th>Recaudado</td> 
+      <th>Sal. Chofer</td> 
+      <th>Comp. Laudo</td> 
+      <th>Comision</td> 
+      <th>Viático No Cobrado</td> 
+      <th>Viático Cobrado</td> 
+      <th>Feriados No Cobrados</td> 
+      <th>Feriados Cobrados</td> 
+      <th>Ap. Sueldo</td> 
+      <th>Ap. Viático</td> 
+      <th>Ap. Total</td> 
+      <th>H13 Patronal</td> 
+      <th>R12 Celeritas</td> 
+      <th>Merc. Pagos Celeritas</td> 
+      <th>H13 Especiales</td> 
+      <th>Mec. Pago</td> 
+      <th>Ocal Cel</td> 
+      <th>Bits</td> 
+      <th>Tarjetas</td> 
+      <th>Merc. Personal</td> 
+      <th>Cabify Tarjetas</td> 
+      <th>Gas-Oil (cred.)</td> 
+      <th>Gas-Oil</td> 
+      <th>Litros</td>
+      <th>Kilometros</td>
+      <th>Lavado</td>
+      <th>Gomería</td>
+      <th>Cabify</td>
+      <th>Otros</td>
+      <th>Efectivo</td>
+      <th>Observaciones</td>
+      </tr></thead>
+
+    <?php    
+    foreach($listarecaudaciones as $row)
+    {
+      echo "<tr>";
+      echo "<td width='150'>";
+      echo $row['HoraEntrada'];
+      echo "</td><td width='150'>";
+      echo $row['HoraSalida'];
+      echo "</td><td>";
+      echo $choferesRecaudacionesID[$row['Chofer']]['Nombre'];
+      echo "</td><td>";
+      echo $row['Recaudado'];
+      echo "</td><td>";
+      echo $row['Salario'];
+      echo "</td><td>";
+      echo $row['Laudo'];
+      echo "</td><td>";
+      echo $row['Comision'];
+      echo "</td><td>";
+      echo $row['ViaticoNoCobrado'];
+      echo "</td><td>";
+      echo $row['ViaticoCobrado'];
+      echo "</td><td>";
+      echo $row['FeriadoNoCobrado'];
+      echo "</td><td>";
+      echo $row['FeriadoCobrado'];
+      echo "</td><td>";
+      echo $row['AporteSalario'];
+      echo "</td><td>";
+      echo $row['AporteViatico'];
+      echo "</td><td>";
+      echo $row['AporteReal'];
+
+      echo "</td><td>";
+      echo $row['H13Patronal'];
+      echo "</td><td>";
+      echo $row['R12Celeritas'];
+      echo "</td><td>";
+      echo $row['MerPagoCeleritas'];
+      echo "</td><td>";
+      echo $row['H13Especiales'];
+      echo "</td><td>";
+      echo $row['MercPago'];
+      echo "</td><td>";
+      echo $row['OcaCel'];
+      echo "</td><td>";
+      echo $row['Bits'];
+      echo "</td><td>";
+      echo $row['Tarjetas'];
+      echo "</td><td>";
+      echo $row['MercPagoPersonal'];
+      echo "</td><td>";
+      echo $row['CabifyTarjetas'];
+      echo "</td><td>";
+      echo $row['GasOilCred'];
+      echo "</td><td>";
+      echo $row['GasOilPlata'];
+      echo "</td><td>";
+      echo $row['GasOilLitros'];
+      echo "</td><td>";
+      echo $row['Kilometros'];
+      echo "</td><td>";
+      echo $row['Lavado'];
+      echo "</td><td>";
+      echo $row['Gomeria'];
+      echo "</td><td>";
+      echo $row['Cabify'];
+      echo "</td><td>";
+      echo $row['Otros'];
+      echo "</td><td>";
+      echo $row['Efectivo'];
+      echo "</td><td>";
+      echo $row['Observaciones'];
+      echo "</td></tr>";
       
-    //$contadorMV['id']=$contadorMV['']+$row['id'];
-    //$contadorMV['fecha']=$contadorMV['']+$row[''];
-    if(($contadorMV['KmEntrada']==0) or ($contadorMV['KmEntrada']>$row['KmEntrada']))
-    {
-      $contadorMV['KmEntrada']=$row['KmEntrada'];
     }
-    if($contadorMV['KmSalida']<$row['KmSalida'])
-    {
-      $contadorMV['KmSalida']=$row['KmSalida'];
-    }
-
-    //$contadorMV['Chofer']=$contadorMV['']+$row[''];
-    //$contadorMV['Movil']=$contadorMV['']+$row[''];
-    //$contadorMV['HoraEntrada']=$contadorMV['']+$row[''];
-    //$contadorMV['HoraSalida']=$contadorMV['']+$row[''];
-    //$contadorMV['Sueldo']=$contadorMV['']+$row[''];
-    //$contadorMV['BPS']=$contadorMV['']+$row[''];
-    $contadorMV['Recaudado']=$contadorMV['Recaudado']+$row['Recaudado'];
-    $contadorMV['Salario']=$contadorMV['Salario']+$row['Salario'];
-    $contadorMV['Laudo']=$contadorMV['Laudo']+$row['Laudo'];
-    $contadorMV['Comision']=$contadorMV['Comision']+$row['Comision'];
-    $contadorMV['ViaticoNoCobrado']=$contadorMV['ViaticoNoCobrado']+$row['ViaticoNoCobrado'];
-    $contadorMV['ViaticoCobrado']=$contadorMV['ViaticoCobrado']+$row['ViaticoCobrado'];
-    $contadorMV['FeriadoNoCobrado']=$contadorMV['FeriadoNoCobrado']+$row['FeriadoNoCobrado'];
-    $contadorMV['FeriadoCobrado']=$contadorMV['FeriadoCobrado']+$row['FeriadoCobrado'];
-    $contadorMV['AporteSalario']=$contadorMV['AporteSalario']+$row['AporteSalario'];
-    $contadorMV['AporteViatico']=$contadorMV['AporteViatico']+$row['AporteViatico'];
-    $contadorMV['AporteFeriado']=$contadorMV['AporteFeriado']+$row['AporteFeriado'];
-    $contadorMV['AporteTotales']=$contadorMV['AporteTotales']+$row['AporteTotales'];
-    $contadorMV['H13Patronal']=$contadorMV['H13Patronal']+$row['H13Patronal'];
-    $contadorMV['R12Celeritas']=$contadorMV['R12Celeritas']+$row['R12Celeritas'];
-    $contadorMV['MerPagoCeleritas']=$contadorMV['MerPagoCeleritas']+$row['MerPagoCeleritas'];
-    $contadorMV['H13Especiales']=$contadorMV['H13Especiales']+$row['H13Especiales'];
-    $contadorMV['MercPago']=$contadorMV['MercPago']+$row['MercPago'];
-    $contadorMV['OcaCel']=$contadorMV['OcaCel']+$row['OcaCel'];
-    $contadorMV['Bits']=$contadorMV['Bits']+$row['Bits'];
-    $contadorMV['Tarjetas']=$contadorMV['Tarjetas']+$row['Tarjetas'];
-    $contadorMV['GasOilPlata']=$contadorMV['GasOilPlata']+$row['GasOilPlata'];
-    $contadorMV['GasOilLitros']=$contadorMV['GasOilLitros']+$row['GasOilLitros'];
-    $contadorMV['Lavado']=$contadorMV['Lavado']+$row['Lavado'];
-    $contadorMV['Gomeria']=$contadorMV['Gomeria']+$row['Gomeria'];
-    $contadorMV['Cabify']=$contadorMV['Cabify']+$row['Cabify'];
-    $contadorMV['Otros']=$contadorMV['Otros']+$row['Otros'];
-    $contadorMV['Efectivo']=$contadorMV['Efectivo']+$row['Efectivo'];
-    $contadorMV['Gastos']=$contadorMV['Gastos']+$row['Gastos'];
-    $contadorMV['Liquido']=$contadorMV['Liquido']+$row['Liquido'];
-    //$contadorMV['Observaciones']=$contadorMV['Observaciones']+$row['Observaciones'];
-    $contadorMV['Kilometros']=$contadorMV['Kilometros']+$row['Kilometros'];
-    $contadorMV['MercPagoPersonal']=$contadorMV['MercPagoPersonal']+$row['MercPagoPersonal'];
-    $contadorMV['CabifyTarjetas']=$contadorMV['CabifyTarjetas']+$row['CabifyTarjetas'];
-    $contadorMV['OtraRetencion']=$contadorMV['OtraRetencion']+$row['OtraRetencion'];
-    $contadorMV['AporteReal']=$contadorMV['AporteReal']+$row['AporteReal'];
-
-  }
-?>
-<a href="index.php">(volver)</a>
-<br><br>
-<table style="width:4000px;" border='1'>
-    <thead>
-    <tr style="background-color: black;
-    color: white;">
-    <th>Fecha entrada</th> 
-    <th>Fecha salida</th> 
-    <th>Chofer</td> 
-    <th>Recaudado</td> 
-    <th>Sal. Chofer</td> 
-    <th>Comp. Laudo</td> 
-    <th>Comision</td> 
-    <th>Viático No Cobrado</td> 
-    <th>Viático Cobrado</td> 
-    <th>Feriados No Cobrados</td> 
-    <th>Feriados Cobrados</td> 
-    <th>Ap. Sueldo</td> 
-    <th>Ap. Viático</td> 
-    <th>Ap. Total</td> 
-    <th>H13 Patronal</td> 
-    <th>R12 Celeritas</td> 
-    <th>Merc. Pagos Celeritas</td> 
-    <th>H13 Especiales</td> 
-    <th>Mec. Pago</td> 
-    <th>Ocal Cel</td> 
-    <th>Bits</td> 
-    <th>Tarjetas</td> 
-    <th>Merc. Personal</td> 
-    <th>Cabify Tarjetas</td> 
-    <th>Gas-Oil (cred.)</td> 
-    <th>Gas-Oil</td> 
-    <th>Litros</td>
-    <th>Kilometros</td>
-    <th>Lavado</td>
-    <th>Gomería</td>
-    <th>Cabify</td>
-    <th>Otros</td>
-    <th>Efectivo</td>
-    <th>Observaciones</td>
-    </tr></thead>
-
-    <?php
-    
-foreach($listarecaudaciones as $row)
-{
-  echo "<tr>";
-  echo "<td width='150'>";
-  echo $row['HoraEntrada'];
-  echo "</td><td width='150'>";
-  echo $row['HoraSalida'];
-  echo "</td><td>";
-  echo $choferes[$row['Chofer']]['Nombre'];
-  echo "</td><td>";
-  echo $row['Recaudado'];
-  echo "</td><td>";
-  echo $row['Salario'];
-  echo "</td><td>";
-  echo $row['Laudo'];
-  echo "</td><td>";
-  echo $row['Comision'];
-  echo "</td><td>";
-  echo $row['ViaticoNoCobrado'];
-  echo "</td><td>";
-  echo $row['ViaticoCobrado'];
-  echo "</td><td>";
-  echo $row['FeriadoNoCobrado'];
-  echo "</td><td>";
-  echo $row['FeriadoCobrado'];
-  echo "</td><td>";
-  echo $row['AporteSalario'];
-  echo "</td><td>";
-  echo $row['AporteViatico'];
-  echo "</td><td>";
-  echo $row['AporteReal'];
-
-  echo "</td><td>";
-  echo $row['H13Patronal'];
-  echo "</td><td>";
-  echo $row['R12Celeritas'];
-  echo "</td><td>";
-  echo $row['MerPagoCeleritas'];
-  echo "</td><td>";
-  echo $row['H13Especiales'];
-  echo "</td><td>";
-  echo $row['MercPago'];
-  echo "</td><td>";
-  echo $row['OcaCel'];
-  echo "</td><td>";
-  echo $row['Bits'];
-  echo "</td><td>";
-  echo $row['Tarjetas'];
-  echo "</td><td>";
-  echo $row['MercPagoPersonal'];
-  echo "</td><td>";
-  echo $row['CabifyTarjetas'];
-//$contador['GasOilCred']
-  echo "</td><td>";
-  echo $row['GasOilCred'];
-  echo "</td><td>";
-  echo $row['GasOilPlata'];
-  echo "</td><td>";
-  echo $row['GasOilLitros'];
-  echo "</td><td>";
-  echo $row['Kilometros'];
-  echo "</td><td>";
-  echo $row['Lavado'];
-  echo "</td><td>";
-  echo $row['Gomeria'];
-  echo "</td><td>";
-  echo $row['Cabify'];
-  echo "</td><td>";
-  echo $row['Otros'];
-  echo "</td><td>";
-  echo $row['Efectivo'];
-  echo "</td><td>";
-  echo $row['Observaciones'];
-  echo "</td></tr>";
-  
-}
-    
-    
-    
     ?>
   </table>
+  <?php }?>
 
-
-<?php
-}
-
-?>
+<?php }?>
