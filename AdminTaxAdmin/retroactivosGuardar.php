@@ -5,7 +5,6 @@ $doc=[];
 $consulta="SELECT * FROM laudos group by Detalle asc";
 $tipos = ejecutarConsulta($consulta);
 
-//print_r($_POST);
 
 if ((isset($_POST['Detalle'])))
 {
@@ -15,7 +14,6 @@ if ((isset($_POST['Detalle'])))
     `Monto`='".$_POST['Monto']."', 
     `Fecha`='".$_POST['Fecha']."' WHERE 
     `Id`='".$_POST['id']."';";
-    //echo $consulta;
     Insert($consulta);
   }else
   {
@@ -40,14 +38,13 @@ if (isset($_POST['chofer']))
   $doc=ejecutarConsulta($consulta); 
 }
 
-
-//print_r($chofer[0]);
 ?>
+
+
 <html lang="es">
   <head>
     <meta charset="UTF-8">
     <title> Responsive Registration Form | CodingLab </title>
-    <link rel="stylesheet" href="style.css">
      <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{
@@ -209,14 +206,12 @@ form .user-details .input-box{
             <span class="details">Detalle:</span>
                         <select name="Detalle" id="Detalle" class="form-select">
                                 <?php
-                                //echo '<option value="'.$doc[0]['Detalle'].'">'.$chofer[0]['Detalle'].'</option>';
                                 foreach($tipos as $row)
                                 {
                                       echo "<option value='".$row['Detalle']."'>".$row['Detalle']."</option>";
                                 }
                                 if (isset($doc[0]['Detalle']))
                                   echo "<option value='".$doc[0]['Detalle']."' selected>".$doc[0]['Detalle']."</option>";
-                                //selected
                                 ?>
                         </select>
           </div>

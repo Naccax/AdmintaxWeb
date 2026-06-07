@@ -21,7 +21,7 @@
         <a class="nav-link" href="choferesRecibosVacacional.php?chofer=<?php echo $_GET['chofer'];?>">Vacacional por Aportación</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#choferesRecibosVacacional.php?chofer=<?php echo $_GET['chofer'];?>">Gestión de Adelantos</a>
+        <a class="nav-link" href="#">Gestión de Adelantos</a>
       </li>
     </ul>
   </div>

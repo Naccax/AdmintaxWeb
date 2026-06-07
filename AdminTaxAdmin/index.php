@@ -1,16 +1,11 @@
 <?php
-//UPDATE `recaudaciones` SET `Observaciones` = 'Hora de Carga' WHERE `recaudaciones`.`id` = 3318;
-//include '../funciones.php';
 include './funciones.php';
 session_start();
-//print_r($_SESSION);
+
 if(isset($_SESSION['usuario']))
 {
-    //echo"Usuario: " . $_SESSION['usuario'];
-    //$todosLosMoviles
     $consulta="SELECT * FROM `movil`";
     $todosLosMoviles=ejecutarConsulta($consulta);
-    //print_r($todosLosMoviles);
     
     $consulta="SELECT * FROM `chofer`";
     $todosLosChoferes=ejecutarConsulta($consulta);
@@ -29,14 +24,6 @@ if(isset($_SESSION['usuario']))
     {
       $empresas[$empresa['id']]=$empresa;
     }
-    //print_r($todosLosChoferes);
-
-    
-    //$consulta='SELECT * FROM `empresa` WHERE `NumeroDeRUT`="'.$_SESSION['empresa'].'"';
-    //$EmpresaDatos = ejecutarConsulta($consulta);
-    
-    //print_r($EmpresaDatos);
-
 
 }else
 {
@@ -53,14 +40,11 @@ if(isset($_GET['salir']))
 
 <head>
     <meta charset="UTF-8">
-    <script type="text/javascript" src="./funciones.js"> </script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./js/index.js"></script>
     <title>AdminTax</title>
     <link rel="shortcut icon" href="img/favicon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-    <LINK REL=StyleSheet HREF="css/index.css" TYPE="text/css" MEDIA=screen>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
@@ -77,10 +61,6 @@ if(isset($_GET['salir']))
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
-        <!--
-      <li class="nav-item active">
-        <a class="nav-link" href="choferesTodos.php">Choferes<span class="sr-only"></span></a>
-      </li>-->
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Choferes
@@ -118,13 +98,10 @@ if(isset($_GET['salir']))
   </div>
 </nav>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-<script >
-</script>
 </body>
 
 </html>
