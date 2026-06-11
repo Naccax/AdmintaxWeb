@@ -39,7 +39,7 @@ if(isset($_POST['usuario']))
 
 
 <!-- Define que el documento esta bajo el estandar de HTML 5 -->
-<!doctype html>
+<!DOCTYPE html>
 
 <!-- Representa la raíz de un documento HTML o XHTML. Todos los demás elementos deben ser descendientes de este elemento. -->
 <html lang="es">

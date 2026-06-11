@@ -51,6 +51,7 @@ $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
 
 ?>
 
+<!DOCTYPE html>
 <html>
 <head>
 <style>
@@ -616,3 +617,5 @@ $fff=explode("-",$_GET['Fecha']);
         <br><br>Aclaración: ____________________ C.I: _________________<br>.</td>
     </tr>
 </table>
+</body>
+</html>

@@ -1,6 +1,8 @@
 
 <?php 
-include('index.php'); 
+include 'funciones.php';
+session_start();
+include 'utils/navbarData.php';
 
 $consulta="SELECT * FROM movil";
 $movilestemp = ejecutarConsulta($consulta);
@@ -103,7 +105,7 @@ if (isset($_POST["Mostrar_Todos"]))
 else
     $consulta="SELECT * FROM multas,chofer,movil where Estado!='Paga' and chofer.id=multas.chofer and movil.Id=multas.MovilId and movil.NumRut='".$_SESSION['empresa']."'";
 
-$todosLosMoviles=ejecutarConsulta($consulta);
+$movilesTodos=ejecutarConsulta($consulta);
 
 if (isset($_POST["Más_detalles"])) {
     $_SESSION["mas"] = !isset($_SESSION["mas"]) || true;
@@ -130,12 +132,12 @@ if (isset($_POST["Ver_Entregas"]))
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+<?php include("utils/head.php"); ?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
         th,td {
@@ -150,6 +152,7 @@ if (isset($_POST["Ver_Entregas"]))
     <title>Paginacion</title>
 </head>
 <body>
+    <?php include("utils/navbar.php"); ?>
     <div class="container" style="margin-top: 10px;padding: 5px">
     
         <form action="#" method="POST">
@@ -183,7 +186,7 @@ if (isset($_POST["Ver_Entregas"]))
             </thead>
             <tbody>
                 <?php
-                    foreach($todosLosMoviles as $row)
+                    foreach($movilesTodos as $row)
                     {
                         echo '<tr>';
                         echo '<td>';
@@ -261,5 +264,6 @@ if (isset($_POST["Ver_Entregas"]))
             });
         });
     </script>
+    <?php include("utils/scriptsBootstrap.php"); ?>
 </body>
 </html>

@@ -1,5 +1,7 @@
 <?php
-include 'index.php';
+include 'funciones.php';
+session_start();
+include 'utils/navbarData.php';
 
 
 $consulta="SELECT * FROM `movil` WHERE `NumRut`='".$_SESSION['empresa']."';";
@@ -745,7 +747,9 @@ $tempGanaciaNeta=round($tempGanaciaNeta,2);
 
 ?>
 
-<html>
+<!DOCTYPE html>
+<html lang="es">
+  <?php include("utils/head.php"); ?>
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <?php if (!empty($dt)) { ?>
@@ -889,6 +893,7 @@ $tempGanaciaNeta=round($tempGanaciaNeta,2);
     <?php } ?>
   </head>
 <body>
+  <?php include("utils/navbar.php"); ?>
   <div class="container text-center abs-center">
     <h1>Resumen</h1>
     <hr>
@@ -911,5 +916,6 @@ $tempGanaciaNeta=round($tempGanaciaNeta,2);
     <div id="piechart" style="width: 100%; height: 500px;" class="container text-center abs-center"></div>
     <?php } ?>
   </div>
+  <?php include("utils/scriptsBootstrap.php"); ?>
 </body>
 </html>
