@@ -3,6 +3,8 @@ include 'funciones.php';
 session_start();
 include 'utils/navbarData.php';
 
+include 'utils/cargarFecha.php';
+
  
 if((isset($_GET['plate'])))
 {
@@ -11,22 +13,6 @@ if((isset($_GET['plate'])))
   $consulta="SELECT * FROM `movil` WHERE `NumRut`='".$_SESSION['empresa']."';";
   $todosLosMoviles=ejecutarConsulta($consulta);
 
- 
-  if (isset($_POST['desde'], $_POST['hasta'])) {
-    $_SESSION['desde'] = $_POST['desde'];
-    $_SESSION['hasta'] = $_POST['hasta'];
-  }
-
-  if (!isset($_SESSION['desde'])) {
-      $_SESSION['desde'] = date('Y-m-01');
-  }
-
-  if (!isset($_SESSION['hasta'])) {
-      $_SESSION['hasta'] = date('Y-m-t');
-  }
-
-  $inicio = $_SESSION['desde'];
-  $fin = $_SESSION['hasta'];
   
   $sql="SELECT * FROM recaudaciones WHERE `fecha` BETWEEN '$inicio 00:00:00' AND '$fin 23:59:00' AND `Movil`='$movil'  ORDER BY `recaudaciones`.`HoraEntrada` ASC;";
   $movimientos=ejecutarConsulta($sql);
@@ -690,424 +676,425 @@ if((isset($_GET['plate'])))
 
   <!DOCTYPE html>
   <html lang="es">
-  <?php include 'utils/head.php'; ?>
-  <body>
-    <?php include 'utils/navbar.php'; ?>
-    <div class="container text-center abs-center">
-      <h1>Resumen de estado del M&oacute;vil <?php echo $_GET['plate']; ?></h1>
-      <hr>
-      <form action="?plate=<?php echo $_GET['plate']; ?>" method="post">
-        Desde : 
-        <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
-        Hasta: 
-        <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
-        <button type="sumit" class="btn btn-primary">Buscar</button>
-      </form>
-      <hr>
-    </div>
+    <?php include 'utils/head.php'; ?>
+    <body>
+      <?php include 'utils/navbar.php'; ?>
+      <div class="container text-center abs-center">
+        <h1>Resumen de estado del M&oacute;vil <?php echo $_GET['plate']; ?></h1>
+        <hr>
+        <form method="get">
+          <input type="hidden" name="plate" value="<?php echo $_GET['plate']; ?>">
+          Desde : 
+          <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
+          Hasta: 
+          <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
+          <button type="sumit" class="btn btn-primary">Buscar</button>
+        </form>
+        <hr>
+      </div>
 
-    <div class="container text-center abs-center">
-      <h2>Informe general</h1>
-      <hr>
+      <div class="container text-center abs-center">
+        <h2>Informe general</h1>
+        <hr>
 
-      <table class="table">
-        <thead>
-        <tr>
-          <th>Detalle</td> <th>Monto</td>
-        </tr></thead>
-        <tr>
-          <td> Total Recaudado </td><td><?php echo "$ ".$contador['Recaudado']; ?></td>
-        </tr>
-        <tr>
-          <td> Efectivo Ingresado</td><td><?php echo "$ ".$contador['Efectivo']; ?></td>
-        </tr>
-        <tr>
-          <td> Pagos electrónicos</td><td><?php echo "$ ".$pagosElecrtonicos; ?></td>
-        </tr>
-        <tr>
-          <td> Descuentos: </td><td><?php echo "$ ".$pagosElecrtonicos; ?></td>
-        </tr>
-        <tr>
-          <td> Gastos Variables</td><td><?php echo "$ ".$contadorGV['Liquido']*(-1); ?></td>
-        </tr>
-        <tr>
-          <td> Movimientos de Efectivo</td><td><?php echo "$ ".$contadorMV['Liquido']; ?></td>
-        </tr>
-        
-        <tr class="Neutral">
-          <td> Efectivo Real en el móvil</td><td><?php echo "$ ".$contador['Efectivo']+$contadorMV['Liquido']+$contadorGV['Liquido']-$contadorPA['Liquido']; ?></td>
-        </tr>
-        <tr>
-          <td> EFECTIVO A ENTREGAR (Descontando Viáticos y Feriados)</td><td>
-            <?php
-            $aaa= $contador['Efectivo']-$contadorPA['Liquido']+$contadorMV['Liquido']+$contadorGV['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-            echo "$ ".round($aaa,2); ?></td>
-        </tr>
-        <tr>
-          <td> Gastos Fijos</td><td><?php echo "$ ".$contadorGF['Liquido']; ?></td>
-        </tr>
-        <tr>
-          <td> Otros Gastos en Boletas</td><td><?php echo "$ ".$aux0; ?></td>
-        </tr>
-        <tr>
-          <td> Gastos de Aceite</td><td><?php echo "$ ".$sumaAceites; ?></td>
-        </tr>
-        <tr>
-          <td> Salarios más complementos de laudos, feriados y horas de taller</td>
-          <td><?php echo "$ ".$contador['Salario']+$contador['Laudo']+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']; ?></td>
-        </tr>
-        <tr>
-          <td> Viáticos (Todos)</td><td><?php echo "$ ".$contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?></td>
-        </tr>
-        <tr>
-          <td> Gas-Oil Contado</td><td><?php echo "$ ".$contador['GasOilPlata']; ?></td>
-        </tr>
-        <?php if($contador['GasOilCred']>0){?>
-        <tr>
-          <td> Gas-Oil Crédito</td><td><?php echo "$ ".round($contador['GasOilCred'],2); ?></td>
-        </tr>
-        <tr class="filaAzul">
-          <td> Retenciones Judiciales dejadas por los choferes</td><td><?php echo "$ ".$contadorPA['Liquido']; ?></td>
-        </tr>
-        <?php }?>
-        <tr class="Neutral">
-          <td> Ganancia Neta:</td><td>
-            <?php
-            $tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-            //echo "$ ".$contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']); 
-            $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred'];
-            echo "$ ".round($tempGanaciaNeta,2);
-            ?></td>
-        </tr>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Detalle</td> <th>Monto</td>
+          </tr></thead>
+          <tr>
+            <td> Total Recaudado </td><td><?php echo "$ ".$contador['Recaudado']; ?></td>
+          </tr>
+          <tr>
+            <td> Efectivo Ingresado</td><td><?php echo "$ ".$contador['Efectivo']; ?></td>
+          </tr>
+          <tr>
+            <td> Pagos electrónicos</td><td><?php echo "$ ".$pagosElecrtonicos; ?></td>
+          </tr>
+          <tr>
+            <td> Descuentos: </td><td><?php echo "$ ".$pagosElecrtonicos; ?></td>
+          </tr>
+          <tr>
+            <td> Gastos Variables</td><td><?php echo "$ ".$contadorGV['Liquido']*(-1); ?></td>
+          </tr>
+          <tr>
+            <td> Movimientos de Efectivo</td><td><?php echo "$ ".$contadorMV['Liquido']; ?></td>
+          </tr>
+          
+          <tr class="Neutral">
+            <td> Efectivo Real en el móvil</td><td><?php echo "$ ".$contador['Efectivo']+$contadorMV['Liquido']+$contadorGV['Liquido']-$contadorPA['Liquido']; ?></td>
+          </tr>
+          <tr>
+            <td> EFECTIVO A ENTREGAR (Descontando Viáticos y Feriados)</td><td>
+              <?php
+              $aaa= $contador['Efectivo']-$contadorPA['Liquido']+$contadorMV['Liquido']+$contadorGV['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
+              echo "$ ".round($aaa,2); ?></td>
+          </tr>
+          <tr>
+            <td> Gastos Fijos</td><td><?php echo "$ ".$contadorGF['Liquido']; ?></td>
+          </tr>
+          <tr>
+            <td> Otros Gastos en Boletas</td><td><?php echo "$ ".$aux0; ?></td>
+          </tr>
+          <tr>
+            <td> Gastos de Aceite</td><td><?php echo "$ ".$sumaAceites; ?></td>
+          </tr>
+          <tr>
+            <td> Salarios más complementos de laudos, feriados y horas de taller</td>
+            <td><?php echo "$ ".$contador['Salario']+$contador['Laudo']+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']; ?></td>
+          </tr>
+          <tr>
+            <td> Viáticos (Todos)</td><td><?php echo "$ ".$contador['ViaticoCobrado']+$contador['ViaticoNoCobrado']; ?></td>
+          </tr>
+          <tr>
+            <td> Gas-Oil Contado</td><td><?php echo "$ ".$contador['GasOilPlata']; ?></td>
+          </tr>
+          <?php if($contador['GasOilCred']>0){?>
+          <tr>
+            <td> Gas-Oil Crédito</td><td><?php echo "$ ".round($contador['GasOilCred'],2); ?></td>
+          </tr>
+          <tr class="filaAzul">
+            <td> Retenciones Judiciales dejadas por los choferes</td><td><?php echo "$ ".$contadorPA['Liquido']; ?></td>
+          </tr>
+          <?php }?>
+          <tr class="Neutral">
+            <td> Ganancia Neta:</td><td>
+              <?php
+              $tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
+              //echo "$ ".$contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']); 
+              $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred'];
+              echo "$ ".round($tempGanaciaNeta,2);
+              ?></td>
+          </tr>
 
-      </table>
-    </div>
+        </table>
+      </div>
 
-    <div class="container text-center abs-center">
-      <h3>Detalle de pagos electrónicos</h3>
-      <hr>
+      <div class="container text-center abs-center">
+        <h3>Detalle de pagos electrónicos</h3>
+        <hr>
 
-      <table class="table">
-        <thead>
-        <tr>
-          <th>Detalle</td> <th>Monto</td>
-        </tr></thead><?php if($contador['Tarjetas']>0){ ?>
-        <tr>
-          <td> Tarjetas (POS)</td><td><?php echo $contador['Tarjetas']; ?></td>
-        </tr><?php } if($contador['MercPago']>0){ ?>
-        <tr>
-          <td> Merc. Pagos</td><td><?php echo $contador['MercPago']; ?></td>
-        </tr><?php } if($contador['H13Patronal']>0){ ?>
-        <tr>
-          <td> H13 Patronal</td><td><?php echo $contador['H13Patronal']; ?></td>
-        </tr><?php } if($contador['R12Celeritas']>0){ ?>
-        <tr>
-          <td> R12 Celeritas</td><td><?php echo $contador['R12Celeritas']; ?></td>
-        </tr><?php } if($contador['MerPagoCeleritas']>0){ ?>
-        <tr>
-          <td> Merc. Pagos Celeritas</td><td><?php echo $contador['MerPagoCeleritas']; ?></td>
-        </tr><?php } if($contador['H13Especiales']>0){ ?>
-        <tr>
-          <td> H13 Especiales</td><td><?php echo $contador['H13Especiales']; ?></td>
-        </tr><?php } if($contador['OcaCel']>0){ ?>
-        <tr>
-          <td> Pagos OCA Cel</td><td><?php echo $contador['OcaCel']; ?></td>
-        </tr><?php } if($contador['Bits']>0){ ?>
-        <tr>
-          <td> Pagos Bits</td><td><?php echo $contador['Bits']; ?></td>
-        </tr><?php } if($contador['MercPagoPersonal']>0){ ?>
-        <tr>
-          <td> Mer. Pagos Personal</td><td><?php echo $contador['MercPagoPersonal']; ?></td>
-        </tr><?php } if($contador['CabifyTarjetas']>0){ ?>
-        <tr>
-          <td> Cabify Tarjetas</td><td><?php echo $contador['CabifyTarjetas']; ?></td>
-        </tr>
-        <?php } ?>
-        <tr>
-          <td></td><td><b><?php echo "$ ".$pagosElecrtonicos; ?></td>
-        </tr>
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Detalle</td> <th>Monto</td>
+          </tr></thead><?php if($contador['Tarjetas']>0){ ?>
+          <tr>
+            <td> Tarjetas (POS)</td><td><?php echo $contador['Tarjetas']; ?></td>
+          </tr><?php } if($contador['MercPago']>0){ ?>
+          <tr>
+            <td> Merc. Pagos</td><td><?php echo $contador['MercPago']; ?></td>
+          </tr><?php } if($contador['H13Patronal']>0){ ?>
+          <tr>
+            <td> H13 Patronal</td><td><?php echo $contador['H13Patronal']; ?></td>
+          </tr><?php } if($contador['R12Celeritas']>0){ ?>
+          <tr>
+            <td> R12 Celeritas</td><td><?php echo $contador['R12Celeritas']; ?></td>
+          </tr><?php } if($contador['MerPagoCeleritas']>0){ ?>
+          <tr>
+            <td> Merc. Pagos Celeritas</td><td><?php echo $contador['MerPagoCeleritas']; ?></td>
+          </tr><?php } if($contador['H13Especiales']>0){ ?>
+          <tr>
+            <td> H13 Especiales</td><td><?php echo $contador['H13Especiales']; ?></td>
+          </tr><?php } if($contador['OcaCel']>0){ ?>
+          <tr>
+            <td> Pagos OCA Cel</td><td><?php echo $contador['OcaCel']; ?></td>
+          </tr><?php } if($contador['Bits']>0){ ?>
+          <tr>
+            <td> Pagos Bits</td><td><?php echo $contador['Bits']; ?></td>
+          </tr><?php } if($contador['MercPagoPersonal']>0){ ?>
+          <tr>
+            <td> Mer. Pagos Personal</td><td><?php echo $contador['MercPagoPersonal']; ?></td>
+          </tr><?php } if($contador['CabifyTarjetas']>0){ ?>
+          <tr>
+            <td> Cabify Tarjetas</td><td><?php echo $contador['CabifyTarjetas']; ?></td>
+          </tr>
+          <?php } ?>
+          <tr>
+            <td></td><td><b><?php echo "$ ".$pagosElecrtonicos; ?></td>
+          </tr>
 
-      </table>
-    </div>
-
-
-    <div class="container text-center abs-center">
-      <h2>Detalle de Gastos Variables</h1>
-      <hr>
-
-      <table class="table">
-        <thead>
-        <tr>
-        <th>Fecha</td> <th>Detalle</th> <th>Monto</td>
-        </tr></thead>
-        <?php 
-        //print_r($ListaGV);
-      if(isset($ListaGV))
-        foreach ($ListaGV as $row) 
-        {
-          echo "<tr>";
-          echo "<td>";
-          echo $row['fecha'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Observaciones'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Otros'];
-          echo "</td>";
-          echo "</tr>";
-        }
-        echo "<tr>";
-        echo "<td>";
-        echo "</td>";
-        echo "<td>";
-        echo "</td>";
-        echo "<td>";
-        echo "<b>$ ".$contadorGV['Otros'];
-        echo "</td>";
-        echo "</tr>";
-
-        ?>
-      </table>
-    </div>
+        </table>
+      </div>
 
 
-    <div class="container text-center abs-center">
-      <h2>Detalle de Otros Gastos en Boletas</h1>
-      <hr>
+      <div class="container text-center abs-center">
+        <h2>Detalle de Gastos Variables</h1>
+        <hr>
 
-      <table class="table">
-        <thead>
-        <tr>
-        <th>Fecha</td> <th>Detalle</th> <th>Monto</td>
-        </tr></thead>
-        <?php 
-        
-        echo "<tr>";
-        echo "<td></td>";
-        echo '<td colspan="1">';
-        echo "Lavado";
-        echo "</td>";
-        echo "<td>";
-        echo $contador["Lavado"];
-        $aux=$contador["Lavado"];
-        echo "</td>";
-        echo "</tr>";
-
-        
-        echo "<tr>";
-        echo "<td></td>";
-        echo '<td colspan="1">';
-        echo "Aceite Cr&eacute;dito:";
-        echo "</td>";
-        echo "<td>";
-        echo $contador["AceiteCred"];
-        $aux=$contador["AceiteCred"];
-        echo "</td>";
-        echo "</tr>";
-
-        
-        echo "<tr>";
-        echo "<td></td>";
-        echo '<td colspan="1">';
-        echo "Gomería";
-        echo "</td>";
-        echo "<td>";
-        echo $contador["Gomeria"];
-        $aux=$aux+$contador["Gomeria"];
-        echo "</td>";
-        echo "</tr>";
-        
-        echo "<tr>";
-        echo "<td></td>";
-        echo '<td colspan="1">';
-        echo "Cabify";
-        echo "</td>";
-        echo "<td>";
-        echo $contador["Cabify"];
-        $aux=$aux+$contador["Cabify"];
-        echo "</td>";
-        echo "</tr>";
-
-
-
-        foreach ($listaOtrosGastos as $row) 
-        {
-          echo "<tr>";
-          echo "<td>";
-          echo $row['fecha'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Observaciones'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Otros'];
-          $aux=$aux+$row['Otros'];
-          echo "</td>";
-          echo "</tr>";
-        }
-
-        
-
-        echo "<tr>";
-        echo "<td>";
-        echo "</td>";
-        echo "<td>";
-        echo "</td>";
-        echo "<td>";
-        echo "<b>$" . $aux;
-        echo "</td>";
-        echo "</tr>";
-
-        ?>
-      </table>
-    </div>
-
-
-    <div class="container text-center abs-center">
-      <h2>Efectivo retirado o depositado</h1>
-      <hr>
-
-      <table class="table">
-        <thead>
-        <tr>
-        <th>Fecha</td> <th>Detalle</th> <th>Monto</td>
-        </tr></thead>
-        <?php 
-        if(isset($ListaMV))
-        foreach ($ListaMV as $row) 
-        {
-          echo "<tr>";
-          echo "<td>";
-          echo $row['fecha'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Observaciones'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Liquido'];
-          echo "</td>";
-          echo "</tr>";
-        }
+        <table class="table">
+          <thead>
+          <tr>
+          <th>Fecha</td> <th>Detalle</th> <th>Monto</td>
+          </tr></thead>
+          <?php 
+          //print_r($ListaGV);
+        if(isset($ListaGV))
+          foreach ($ListaGV as $row) 
+          {
+            echo "<tr>";
+            echo "<td>";
+            echo $row['fecha'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Observaciones'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Otros'];
+            echo "</td>";
+            echo "</tr>";
+          }
           echo "<tr>";
           echo "<td>";
           echo "</td>";
           echo "<td>";
           echo "</td>";
           echo "<td>";
-          echo "<b>$ ".$contadorMV['Liquido'];
+          echo "<b>$ ".$contadorGV['Otros'];
           echo "</td>";
           echo "</tr>";
 
-        ?>
-      </table>
-    </div>
+          ?>
+        </table>
+      </div>
 
 
-    
-    <div class="container text-center abs-center">
-      <h2>Detalle de Gastos Fijos</h1>
-      <hr>
+      <div class="container text-center abs-center">
+        <h2>Detalle de Otros Gastos en Boletas</h1>
+        <hr>
 
-      <table class="table">
-        <thead>
-        <tr>
-        <th>Detalle</th> <th>Monto</td>
-        </tr></thead>
-        <?php 
-        foreach ($ListaGF as $row) 
-        {
+        <table class="table">
+          <thead>
+          <tr>
+          <th>Fecha</td> <th>Detalle</th> <th>Monto</td>
+          </tr></thead>
+          <?php 
+          
+          echo "<tr>";
+          echo "<td></td>";
+          echo '<td colspan="1">';
+          echo "Lavado";
+          echo "</td>";
+          echo "<td>";
+          echo $contador["Lavado"];
+          $aux=$contador["Lavado"];
+          echo "</td>";
+          echo "</tr>";
+
+          
+          echo "<tr>";
+          echo "<td></td>";
+          echo '<td colspan="1">';
+          echo "Aceite Cr&eacute;dito:";
+          echo "</td>";
+          echo "<td>";
+          echo $contador["AceiteCred"];
+          $aux=$contador["AceiteCred"];
+          echo "</td>";
+          echo "</tr>";
+
+          
+          echo "<tr>";
+          echo "<td></td>";
+          echo '<td colspan="1">';
+          echo "Gomería";
+          echo "</td>";
+          echo "<td>";
+          echo $contador["Gomeria"];
+          $aux=$aux+$contador["Gomeria"];
+          echo "</td>";
+          echo "</tr>";
+          
+          echo "<tr>";
+          echo "<td></td>";
+          echo '<td colspan="1">';
+          echo "Cabify";
+          echo "</td>";
+          echo "<td>";
+          echo $contador["Cabify"];
+          $aux=$aux+$contador["Cabify"];
+          echo "</td>";
+          echo "</tr>";
+
+
+
+          foreach ($listaOtrosGastos as $row) 
+          {
+            echo "<tr>";
+            echo "<td>";
+            echo $row['fecha'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Observaciones'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Otros'];
+            $aux=$aux+$row['Otros'];
+            echo "</td>";
+            echo "</tr>";
+          }
+
+          
+
           echo "<tr>";
           echo "<td>";
-          echo $row['Observaciones'];
           echo "</td>";
-          echo "<td>";
-          echo $row['Liquido'];
-          echo "</td>";
-          echo "</tr>";
-        }
-          echo "<tr>";
           echo "<td>";
           echo "</td>";
           echo "<td>";
-          echo "<b>$ ".$contadorGF['Liquido'];
+          echo "<b>$" . $aux;
           echo "</td>";
           echo "</tr>";
 
-        ?>
-      </table>
-    </div>
+          ?>
+        </table>
+      </div>
 
 
-    <div class="container text-center abs-center">
-      <h2>Detalle de Retenciones Judiciales</h1>
-      <hr>
+      <div class="container text-center abs-center">
+        <h2>Efectivo retirado o depositado</h1>
+        <hr>
 
-      <table class="table">
-        <thead>
-        <tr>
-        <th>Detalle</th> <th>Monto</td>
-        </tr></thead>
-        <?php 
-        foreach ($listaPA as $row) 
-        {
-          echo "<tr>";
-          echo "<td>";
-          echo $row['Observaciones'];
-          echo "</td>";
-          echo "<td>";
-          echo $row['Liquido'];
-          echo "</td>";
-          echo "</tr>";
-        }
-          echo "<tr>";
-          echo "<td>";
-          echo "</td>";
-          echo "<td>";
-          echo "<b>$ ".$contadorPA['Liquido'];
-          echo "</td>";
-          echo "</tr>";
+        <table class="table">
+          <thead>
+          <tr>
+          <th>Fecha</td> <th>Detalle</th> <th>Monto</td>
+          </tr></thead>
+          <?php 
+          if(isset($ListaMV))
+          foreach ($ListaMV as $row) 
+          {
+            echo "<tr>";
+            echo "<td>";
+            echo $row['fecha'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Observaciones'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Liquido'];
+            echo "</td>";
+            echo "</tr>";
+          }
+            echo "<tr>";
+            echo "<td>";
+            echo "</td>";
+            echo "<td>";
+            echo "</td>";
+            echo "<td>";
+            echo "<b>$ ".$contadorMV['Liquido'];
+            echo "</td>";
+            echo "</tr>";
 
-        ?>
-      </table>
-    </div>
+          ?>
+        </table>
+      </div>
 
 
-    <div class="container text-center abs-center">
-      <h2>Paramétricas del Movil</h1>
-      <hr>
+      
+      <div class="container text-center abs-center">
+        <h2>Detalle de Gastos Fijos</h1>
+        <hr>
 
-      <table class="table">
-        <thead>
-        <tr>
-          <th>Detalle</td> <th>Cantidad</td>
-        </tr></thead>
-        <tr>
-          <td> Kilóimetros al inicio del mes</td><td><?php echo $contador['KmEntrada']; ?></td>
-        </tr>
-        <tr>
-          <td> Kilóimetros al fin del mes</td><td><?php echo $contador['KmSalida']; ?></td>
-        </tr>
-        <tr>
-          <td> Kilómetros recorridos incluído relevos</td><td><?php echo $contador['KmSalida']-$contador['KmEntrada']; ?></td>
-        </tr>
-        <tr>
-          <td> Kilómetros recorridos en turnos</td><td><?php echo $contador['Kilometros']; ?></td>
-        </tr>
-        <tr>
-          <td> Litros consumidos de combustible</td><td><?php echo $contador['GasOilLitros']; ?></td>
-        </tr>
-        <tr>
-          <td > Kilómetros por Litro</td><td><?php if ($contador['GasOilLitros'] != 0){$number=($contador['KmSalida']-$contador['KmEntrada'])/$contador['GasOilLitros'];}else{$number=0;} $number=round($number, 2); echo $number; ?></td>
-        </tr>
-        <tr>
-          <td> Pesos por Kilómetro</td><td><?php if ($contador['Kilometros'] != 0){$number = $contador['Recaudado']/$contador['Kilometros'];}else{$number=0;} $number=round($number, 2); echo $number;?></td>
-        </tr>
+        <table class="table">
+          <thead>
+          <tr>
+          <th>Detalle</th> <th>Monto</td>
+          </tr></thead>
+          <?php 
+          foreach ($ListaGF as $row) 
+          {
+            echo "<tr>";
+            echo "<td>";
+            echo $row['Observaciones'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Liquido'];
+            echo "</td>";
+            echo "</tr>";
+          }
+            echo "<tr>";
+            echo "<td>";
+            echo "</td>";
+            echo "<td>";
+            echo "<b>$ ".$contadorGF['Liquido'];
+            echo "</td>";
+            echo "</tr>";
 
-      </table>
-    </div>
-    <?php include 'utils/scriptsBootstrap.php'; ?>
-  </body>
+          ?>
+        </table>
+      </div>
+
+
+      <div class="container text-center abs-center">
+        <h2>Detalle de Retenciones Judiciales</h1>
+        <hr>
+
+        <table class="table">
+          <thead>
+          <tr>
+          <th>Detalle</th> <th>Monto</td>
+          </tr></thead>
+          <?php 
+          foreach ($listaPA as $row) 
+          {
+            echo "<tr>";
+            echo "<td>";
+            echo $row['Observaciones'];
+            echo "</td>";
+            echo "<td>";
+            echo $row['Liquido'];
+            echo "</td>";
+            echo "</tr>";
+          }
+            echo "<tr>";
+            echo "<td>";
+            echo "</td>";
+            echo "<td>";
+            echo "<b>$ ".$contadorPA['Liquido'];
+            echo "</td>";
+            echo "</tr>";
+
+          ?>
+        </table>
+      </div>
+
+
+      <div class="container text-center abs-center">
+        <h2>Paramétricas del Movil</h1>
+        <hr>
+
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Detalle</td> <th>Cantidad</td>
+          </tr></thead>
+          <tr>
+            <td> Kilóimetros al inicio del mes</td><td><?php echo $contador['KmEntrada']; ?></td>
+          </tr>
+          <tr>
+            <td> Kilóimetros al fin del mes</td><td><?php echo $contador['KmSalida']; ?></td>
+          </tr>
+          <tr>
+            <td> Kilómetros recorridos incluído relevos</td><td><?php echo $contador['KmSalida']-$contador['KmEntrada']; ?></td>
+          </tr>
+          <tr>
+            <td> Kilómetros recorridos en turnos</td><td><?php echo $contador['Kilometros']; ?></td>
+          </tr>
+          <tr>
+            <td> Litros consumidos de combustible</td><td><?php echo $contador['GasOilLitros']; ?></td>
+          </tr>
+          <tr>
+            <td > Kilómetros por Litro</td><td><?php if ($contador['GasOilLitros'] != 0){$number=($contador['KmSalida']-$contador['KmEntrada'])/$contador['GasOilLitros'];}else{$number=0;} $number=round($number, 2); echo $number; ?></td>
+          </tr>
+          <tr>
+            <td> Pesos por Kilómetro</td><td><?php if ($contador['Kilometros'] != 0){$number = $contador['Recaudado']/$contador['Kilometros'];}else{$number=0;} $number=round($number, 2); echo $number;?></td>
+          </tr>
+
+        </table>
+      </div>
+      <?php include 'utils/scriptsBootstrap.php'; ?>
+    </body>
   </html>
 
 <?php }?>

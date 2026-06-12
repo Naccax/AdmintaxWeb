@@ -3,6 +3,8 @@ include 'funciones.php';
 session_start();
 include 'utils/navbarData.php';
 
+include 'utils/cargarFecha.php';
+
 
 $consulta="SELECT * FROM `movil` WHERE `NumRut`='".$_SESSION['empresa']."';";
 $todosLosMoviles=ejecutarConsulta($consulta);
@@ -19,21 +21,6 @@ $ides = str_replace(",)", ")", $ides);
 
 $movil=$ides;
 
-if (isset($_POST['desde'], $_POST['hasta'])) {
-    $_SESSION['desde'] = $_POST['desde'];
-    $_SESSION['hasta'] = $_POST['hasta'];
-}
-
-if (!isset($_SESSION['desde'])) {
-    $_SESSION['desde'] = date('Y-m-01');
-}
-
-if (!isset($_SESSION['hasta'])) {
-    $_SESSION['hasta'] = date('Y-m-t');
-}
-
-$inicio = $_SESSION['desde'];
-$fin = $_SESSION['hasta'];
 
 $consulta="SELECT recaudaciones.Movil,round((sum(recaudaciones.Recaudado)/sum(recaudaciones.Kilometros)),2) as km,sum(recaudaciones.Recaudado) as Recaudado,recaudaciones.MovilId,Movil.NumRut from recaudaciones,Movil WHERE HoraEntrada>='$inicio 00:00:00' and  HoraEntrada <= '$fin 23:59:00' and Movil.NumRut='".$_SESSION['empresa']."' AND Movil.id=recaudaciones.MovilId GROUP by recaudaciones.MovilId;";
 $dt=ejecutarConsulta($consulta);
@@ -892,30 +879,30 @@ $tempGanaciaNeta=round($tempGanaciaNeta,2);
     </script>
     <?php } ?>
   </head>
-<body>
-  <?php include("utils/navbar.php"); ?>
-  <div class="container text-center abs-center">
-    <h1>Resumen</h1>
-    <hr>
-    <form action="?plate=" method="post">
-      Desde : 
-      <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
-      Hasta: 
-      <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
-      <button type="sumit" class="btn btn-primary">Buscar</button>
-    </form>
-    <hr>
+  <body>
+    <?php include("utils/navbar.php"); ?>
+    <div class="container text-center abs-center">
+      <h1>Resumen</h1>
+      <hr>
+      <form method="get">
+        Desde : 
+        <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
+        Hasta: 
+        <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
+        <button type="sumit" class="btn btn-primary">Buscar</button>
+      </form>
+      <hr>
 
-    <?php if (!empty($dt)){ ?>
-    <div id="columnchart_values" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
+      <?php if (!empty($dt)){ ?>
+      <div id="columnchart_values" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
 
-    <div id="columnchart_values2" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
+      <div id="columnchart_values2" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
 
-    <div id="columnchart_values3" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
+      <div id="columnchart_values3" style="width: 100%; height: 600px;" class="container text-center abs-center"></div>
 
-    <div id="piechart" style="width: 100%; height: 500px;" class="container text-center abs-center"></div>
-    <?php } ?>
-  </div>
-  <?php include("utils/scriptsBootstrap.php"); ?>
-</body>
+      <div id="piechart" style="width: 100%; height: 500px;" class="container text-center abs-center"></div>
+      <?php } ?>
+    </div>
+    <?php include("utils/scriptsBootstrap.php"); ?>
+  </body>
 </html>

@@ -3,6 +3,8 @@ include 'funciones.php';
 session_start();
 include 'utils/navbarData.php';
 
+include 'utils/cargarFecha.php';
+
 
 if((isset($_GET['plate'])))
 {
@@ -11,22 +13,6 @@ if((isset($_GET['plate'])))
   $consulta="SELECT * FROM `movil` WHERE `NumRut`='".$_SESSION['empresa']."';";
   $todosLosMoviles=ejecutarConsulta($consulta);
 
- 
-  if (isset($_POST['desde'], $_POST['hasta'])) {
-    $_SESSION['desde'] = $_POST['desde'];
-    $_SESSION['hasta'] = $_POST['hasta'];
-  }
-
-  if (!isset($_SESSION['desde'])) {
-      $_SESSION['desde'] = date('Y-m-01');
-  }
-
-  if (!isset($_SESSION['hasta'])) {
-      $_SESSION['hasta'] = date('Y-m-t');
-  }
-
-  $inicio = $_SESSION['desde'];
-  $fin = $_SESSION['hasta'];
   
   $sql="SELECT * FROM recaudaciones WHERE `fecha` BETWEEN '$inicio' AND '$fin' AND `Movil`='$movil'  ORDER BY `recaudaciones`.`HoraEntrada` ASC;";
   $movimientos=ejecutarConsulta($sql);
@@ -487,145 +473,146 @@ if((isset($_GET['plate'])))
 
   <!DOCTYPE html>
   <html lang="es">
-  <?php include 'utils/head.php';?>
-  <body>
-    <?php include 'utils/navbar.php';?>
-    <div class="container text-center abs-center">
-      <h1>Resumen de estado del M&oacute;vil <?php echo $_GET['plate']; ?></h1>
-      <hr>
-      <form action="?plate=<?php echo $_GET['plate']; ?>" method="post">
-        Desde : 
-        <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
-        Hasta: 
-        <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
-        <button type="sumit" class="btn btn-primary">Buscar</button>
-      </form>
-      <hr>
-    </div>
+    <?php include 'utils/head.php';?>
+    <body>
+      <?php include 'utils/navbar.php';?>
+      <div class="container text-center abs-center">
+        <h1>Resumen de estado del M&oacute;vil <?php echo $_GET['plate']; ?></h1>
+        <hr>
+        <form method="get">
+          <input type="hidden" name="plate" value="<?php echo $_GET['plate']; ?>">
+          Desde : 
+          <input type='date' id='desde' name="desde" value='<?php echo $inicio;?>'>
+          Hasta: 
+          <input type='date' id='hasta' name="hasta" value='<?php echo $fin;?>'>&nbsp;&nbsp;&nbsp;
+          <button type="sumit" class="btn btn-primary">Buscar</button>
+        </form>
+        <hr>
+      </div>
 
 
-    <br><br>
-    <?php if(!empty($listarecaudaciones)){?>
-    <table style="width:4000px;" border='1'>
-        <thead>
-        <tr style="background-color: black;
-        color: white;">
-        <th>Fecha entrada</th> 
-        <th>Fecha salida</th> 
-        <th>Chofer</td> 
-        <th>Recaudado</td> 
-        <th>Sal. Chofer</td> 
-        <th>Comp. Laudo</td> 
-        <th>Comision</td> 
-        <th>Viático No Cobrado</td> 
-        <th>Viático Cobrado</td> 
-        <th>Feriados No Cobrados</td> 
-        <th>Feriados Cobrados</td> 
-        <th>Ap. Sueldo</td> 
-        <th>Ap. Viático</td> 
-        <th>Ap. Total</td> 
-        <th>H13 Patronal</td> 
-        <th>R12 Celeritas</td> 
-        <th>Merc. Pagos Celeritas</td> 
-        <th>H13 Especiales</td> 
-        <th>Mec. Pago</td> 
-        <th>Ocal Cel</td> 
-        <th>Bits</td> 
-        <th>Tarjetas</td> 
-        <th>Merc. Personal</td> 
-        <th>Cabify Tarjetas</td> 
-        <th>Gas-Oil (cred.)</td> 
-        <th>Gas-Oil</td> 
-        <th>Litros</td>
-        <th>Kilometros</td>
-        <th>Lavado</td>
-        <th>Gomería</td>
-        <th>Cabify</td>
-        <th>Otros</td>
-        <th>Efectivo</td>
-        <th>Observaciones</td>
-        </tr></thead>
+      <br><br>
+      <?php if(!empty($listarecaudaciones)){?>
+      <table style="width:4000px;" border='1'>
+          <thead>
+          <tr style="background-color: black;
+          color: white;">
+          <th>Fecha entrada</th> 
+          <th>Fecha salida</th> 
+          <th>Chofer</td> 
+          <th>Recaudado</td> 
+          <th>Sal. Chofer</td> 
+          <th>Comp. Laudo</td> 
+          <th>Comision</td> 
+          <th>Viático No Cobrado</td> 
+          <th>Viático Cobrado</td> 
+          <th>Feriados No Cobrados</td> 
+          <th>Feriados Cobrados</td> 
+          <th>Ap. Sueldo</td> 
+          <th>Ap. Viático</td> 
+          <th>Ap. Total</td> 
+          <th>H13 Patronal</td> 
+          <th>R12 Celeritas</td> 
+          <th>Merc. Pagos Celeritas</td> 
+          <th>H13 Especiales</td> 
+          <th>Mec. Pago</td> 
+          <th>Ocal Cel</td> 
+          <th>Bits</td> 
+          <th>Tarjetas</td> 
+          <th>Merc. Personal</td> 
+          <th>Cabify Tarjetas</td> 
+          <th>Gas-Oil (cred.)</td> 
+          <th>Gas-Oil</td> 
+          <th>Litros</td>
+          <th>Kilometros</td>
+          <th>Lavado</td>
+          <th>Gomería</td>
+          <th>Cabify</td>
+          <th>Otros</td>
+          <th>Efectivo</td>
+          <th>Observaciones</td>
+          </tr></thead>
 
-      <?php    
-      foreach($listarecaudaciones as $row)
-      {
-        echo "<tr>";
-        echo "<td width='150'>";
-        echo $row['HoraEntrada'];
-        echo "</td><td width='150'>";
-        echo $row['HoraSalida'];
-        echo "</td><td>";
-        echo $choferesRecaudacionesID[$row['Chofer']]['Nombre'];
-        echo "</td><td>";
-        echo $row['Recaudado'];
-        echo "</td><td>";
-        echo $row['Salario'];
-        echo "</td><td>";
-        echo $row['Laudo'];
-        echo "</td><td>";
-        echo $row['Comision'];
-        echo "</td><td>";
-        echo $row['ViaticoNoCobrado'];
-        echo "</td><td>";
-        echo $row['ViaticoCobrado'];
-        echo "</td><td>";
-        echo $row['FeriadoNoCobrado'];
-        echo "</td><td>";
-        echo $row['FeriadoCobrado'];
-        echo "</td><td>";
-        echo $row['AporteSalario'];
-        echo "</td><td>";
-        echo $row['AporteViatico'];
-        echo "</td><td>";
-        echo $row['AporteReal'];
+        <?php    
+        foreach($listarecaudaciones as $row)
+        {
+          echo "<tr>";
+          echo "<td width='150'>";
+          echo $row['HoraEntrada'];
+          echo "</td><td width='150'>";
+          echo $row['HoraSalida'];
+          echo "</td><td>";
+          echo $choferesRecaudacionesID[$row['Chofer']]['Nombre'];
+          echo "</td><td>";
+          echo $row['Recaudado'];
+          echo "</td><td>";
+          echo $row['Salario'];
+          echo "</td><td>";
+          echo $row['Laudo'];
+          echo "</td><td>";
+          echo $row['Comision'];
+          echo "</td><td>";
+          echo $row['ViaticoNoCobrado'];
+          echo "</td><td>";
+          echo $row['ViaticoCobrado'];
+          echo "</td><td>";
+          echo $row['FeriadoNoCobrado'];
+          echo "</td><td>";
+          echo $row['FeriadoCobrado'];
+          echo "</td><td>";
+          echo $row['AporteSalario'];
+          echo "</td><td>";
+          echo $row['AporteViatico'];
+          echo "</td><td>";
+          echo $row['AporteReal'];
 
-        echo "</td><td>";
-        echo $row['H13Patronal'];
-        echo "</td><td>";
-        echo $row['R12Celeritas'];
-        echo "</td><td>";
-        echo $row['MerPagoCeleritas'];
-        echo "</td><td>";
-        echo $row['H13Especiales'];
-        echo "</td><td>";
-        echo $row['MercPago'];
-        echo "</td><td>";
-        echo $row['OcaCel'];
-        echo "</td><td>";
-        echo $row['Bits'];
-        echo "</td><td>";
-        echo $row['Tarjetas'];
-        echo "</td><td>";
-        echo $row['MercPagoPersonal'];
-        echo "</td><td>";
-        echo $row['CabifyTarjetas'];
-        echo "</td><td>";
-        echo $row['GasOilCred'];
-        echo "</td><td>";
-        echo $row['GasOilPlata'];
-        echo "</td><td>";
-        echo $row['GasOilLitros'];
-        echo "</td><td>";
-        echo $row['Kilometros'];
-        echo "</td><td>";
-        echo $row['Lavado'];
-        echo "</td><td>";
-        echo $row['Gomeria'];
-        echo "</td><td>";
-        echo $row['Cabify'];
-        echo "</td><td>";
-        echo $row['Otros'];
-        echo "</td><td>";
-        echo $row['Efectivo'];
-        echo "</td><td>";
-        echo $row['Observaciones'];
-        echo "</td></tr>";
-        
-      }
-      ?>
-    </table>
-  <?php }?>
-    <?php include 'utils/scriptsBootstrap.php';?>
-  </body>
+          echo "</td><td>";
+          echo $row['H13Patronal'];
+          echo "</td><td>";
+          echo $row['R12Celeritas'];
+          echo "</td><td>";
+          echo $row['MerPagoCeleritas'];
+          echo "</td><td>";
+          echo $row['H13Especiales'];
+          echo "</td><td>";
+          echo $row['MercPago'];
+          echo "</td><td>";
+          echo $row['OcaCel'];
+          echo "</td><td>";
+          echo $row['Bits'];
+          echo "</td><td>";
+          echo $row['Tarjetas'];
+          echo "</td><td>";
+          echo $row['MercPagoPersonal'];
+          echo "</td><td>";
+          echo $row['CabifyTarjetas'];
+          echo "</td><td>";
+          echo $row['GasOilCred'];
+          echo "</td><td>";
+          echo $row['GasOilPlata'];
+          echo "</td><td>";
+          echo $row['GasOilLitros'];
+          echo "</td><td>";
+          echo $row['Kilometros'];
+          echo "</td><td>";
+          echo $row['Lavado'];
+          echo "</td><td>";
+          echo $row['Gomeria'];
+          echo "</td><td>";
+          echo $row['Cabify'];
+          echo "</td><td>";
+          echo $row['Otros'];
+          echo "</td><td>";
+          echo $row['Efectivo'];
+          echo "</td><td>";
+          echo $row['Observaciones'];
+          echo "</td></tr>";
+          
+        }
+        ?>
+      </table>
+      <?php }?>
+      <?php include 'utils/scriptsBootstrap.php';?>
+    </body>
   </html>
 <?php }?>

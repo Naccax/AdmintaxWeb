@@ -8,10 +8,10 @@ include 'utils/navbarData.php';
 
 <!DOCTYPE html>
 <html lang="es">
-<?php include 'utils/head.php';?>
-<body>
-  <div id="menu"></div>
-  <?php include 'utils/navbar.php';?>
-  <?php include 'utils/scriptsBootstrap.php';?>
-</body>
+  <?php include 'utils/head.php';?>
+  <body>
+    <div id="menu"></div>
+    <?php include 'utils/navbar.php';?>
+    <?php include 'utils/scriptsBootstrap.php';?>
+  </body>
 </html>

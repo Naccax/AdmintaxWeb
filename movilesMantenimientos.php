@@ -406,57 +406,57 @@ if((isset($_GET['plate'])))
   
   <!DOCTYPE html>
   <html lang="es">
-  <?php include("utils/head.php"); ?>
-  <body>
-    <?php include("utils/navbar.php"); ?>
-    <div class="container text-center abs-center">
-      <h1>Mantenimientos de M&oacute;vil <?php echo $_GET['plate']; ?></h1>
-    </div>
-    <div class="container text-center abs-center">
-      <h3>Kilometraje actual: <?php echo $kilometrajeactual[0][0]; ?></h3>
+    <?php include("utils/head.php"); ?>
+    <body>
+      <?php include("utils/navbar.php"); ?>
+      <div class="container text-center abs-center">
+        <h1>Mantenimientos de M&oacute;vil <?php echo $_GET['plate']; ?></h1>
+      </div>
+      <div class="container text-center abs-center">
+        <h3>Kilometraje actual: <?php echo $kilometrajeactual[0][0]; ?></h3>
 
-      <table class="table">
-        <thead>
-        <tr>
-        <th>Fecha</th> <th>Detalle</th> <th>Monto</th><th>Kilometros</th><th>Prox.(KM)</th>
-        </tr></thead>
-        <?php 
-        if(isset($movimientos))
-          foreach ($movimientos as $row) 
-          {
-            if(($row['KmDuracion'] < $kilometrajeactual[0][0]) and ($row['KmDuracion']>0) and ($row['Alarma']=="True"))
+        <table class="table">
+          <thead>
+          <tr>
+          <th>Fecha</th> <th>Detalle</th> <th>Monto</th><th>Kilometros</th><th>Prox.(KM)</th>
+          </tr></thead>
+          <?php 
+          if(isset($movimientos))
+            foreach ($movimientos as $row) 
             {
-              echo '<tr class="filaRoja">';
+              if(($row['KmDuracion'] < $kilometrajeactual[0][0]) and ($row['KmDuracion']>0) and ($row['Alarma']=="True"))
+              {
+                echo '<tr class="filaRoja">';
+              }
+              else
+              {
+                echo "<tr>";
+              }
+              echo "<td>";
+              $sep = explode(" ", $row['fecha']);
+              echo $sep[0];
+              echo "</td>";
+              echo "<td  class='dts'>";
+              echo $row['Observaciones'];
+              echo "</td>";
+              echo "<td class='kms'>";
+              echo $row['Gastos'];
+              echo "</td>";
+              echo "<td class='kms'>";
+              echo $row['KmEntrada'];
+              echo "</td>";
+              echo "<td class='kms'>";
+              echo $row['KmDuracion'];
+              echo "</td>";
+              echo "</tr>";
             }
-            else
-            {
-              echo "<tr>";
-            }
-            echo "<td>";
-            $sep = explode(" ", $row['fecha']);
-            echo $sep[0];
-            echo "</td>";
-            echo "<td  class='dts'>";
-            echo $row['Observaciones'];
-            echo "</td>";
-            echo "<td class='kms'>";
-            echo $row['Gastos'];
-            echo "</td>";
-            echo "<td class='kms'>";
-            echo $row['KmEntrada'];
-            echo "</td>";
-            echo "<td class='kms'>";
-            echo $row['KmDuracion'];
-            echo "</td>";
-            echo "</tr>";
-          }
 
-        ?>
-      </table>
+          ?>
+        </table>
 
-    </div>
-    <?php include("utils/scriptsBootstrap.php"); ?>
-  </body>
+      </div>
+      <?php include("utils/scriptsBootstrap.php"); ?>
+    </body>
   </html>
 
 
