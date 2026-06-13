@@ -752,6 +752,7 @@ foreach ($listaOtrosGastos as $row)
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
   <?php include("utils/head.php"); ?>

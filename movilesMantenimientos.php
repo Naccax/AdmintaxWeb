@@ -2,9 +2,7 @@
 include 'funciones.php';
 session_start();
 include 'utils/navbarData.php';
-?>
 
-<?php
  
 if((isset($_GET['plate'])))
 {

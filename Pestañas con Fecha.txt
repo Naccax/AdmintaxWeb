@@ -1,9 +1,0 @@
-Pestañas con Fecha:
-
-graficas.php
-resumenFinalDeEmpresa.php
-
-moviles.php
-recaudaciones.php
-reportesVarela.php
-

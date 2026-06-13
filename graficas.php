@@ -559,7 +559,6 @@ if(isset($ListaGV)){
     $contadorGV['Efectivo']=$contadorGV['Efectivo']+$row['Efectivo'];
     $contadorGV['Gastos']=$contadorGV['Gastos']+$row['Gastos'];
     $contadorGV['Liquido']=$contadorGV['Liquido']+$row['Liquido'];
-    //$contadorGV['Observaciones']=$contadorGV['Observaciones']+$row['Observaciones'];
     $contadorGV['Kilometros']=$contadorGV['Kilometros']+$row['Kilometros'];
     $contadorGV['MercPagoPersonal']=$contadorGV['MercPagoPersonal']+$row['MercPagoPersonal'];
     $contadorGV['CabifyTarjetas']=$contadorGV['CabifyTarjetas']+$row['CabifyTarjetas'];
@@ -731,8 +730,8 @@ $tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gast
 $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0]-$contador['LaudoNoCobrado'];
 $tempGanaciaNeta=round($tempGanaciaNeta,2);
 
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">

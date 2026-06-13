@@ -690,6 +690,7 @@ if((isset($_GET['plate'])))
 
   ?>
 
+
   <!DOCTYPE html>
   <html lang="es">
     <?php include("utils/head.php"); ?>

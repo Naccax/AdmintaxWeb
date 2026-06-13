@@ -4,6 +4,7 @@ session_start();
 include 'utils/navbarData.php';
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
     <?php include 'utils/head.php';?>

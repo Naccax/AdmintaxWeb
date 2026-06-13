@@ -1,10 +1,13 @@
 <?php
 session_start();
+
 if(!(isset($_SESSION['empresa'])))
 {
   header('Location: login.php');
 }
+
 include 'funciones.php';
+
 $consulta='SELECT * FROM `empresa` WHERE `NumeroDeRUT`="'.$_SESSION['empresa'].'"';
 $EmpresaDatos = ejecutarConsulta($consulta);
 
@@ -46,9 +49,6 @@ $reciboSueldo=ejecutarConsulta($sql);
 
 $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
 
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -56,15 +56,15 @@ $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
   <head>
   <style>
   table {
-    
-      font-family: 'Overpass', sans-serif;
-      font-weight: normal;
-      font-size: 11px;
-      color: #1b262c;
-      width: 100%;
-      border-collapse: collapse;
+    font-family: 'Overpass', sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    color: #1b262c;
+    width: 100%;
+    border-collapse: collapse;
     background-color: rgba(255, 255, 255, 0.7);   
   }
+
   table.ex
   {
     background-color: rgba(255, 255, 255, 0.7);
@@ -79,7 +79,6 @@ $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
   .td2{
     vertical-align: top;
   }
-
 
   div.relative {
     position: relative;
@@ -96,7 +95,6 @@ $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
     font-size: 12px;
   }
 
-
   .titulo
   {
     font-size:40px;
@@ -105,6 +103,7 @@ $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
     text-align: center;
     width:420px;
   }
+
   .emp
   {
     font-size:40px;
@@ -120,37 +119,38 @@ $nomDeChofer=explode(",",$choferes[$_GET["CHID"]]['Nombre'])
     height:25px;
   }
 
-
   .firma
   {
     text-align: center;
     height:50px;
   }
+
   .cons
   {
-      background: #000;
-      height:25px;
-      color : #fff;
-      width:130px;
+    background: #000;
+    height:25px;
+    color : #fff;
+    width:130px;
   }
+
   .logo
   {
     height: 10;
     width: 10;
   }
+
   .interlineado { line-height: 150%;} 
 
   body {
-      background: linear-gradient(#ff0000, #000000);
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-image: url("./img/favicon.png");
-      background-repeat: no-repeat, repeat;
-      background-color: #cccccc;
-      background-size:contain;
-      background-position: center;
-    }
-
+    background: linear-gradient(#ff0000, #000000);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url("./img/favicon.png");
+    background-repeat: no-repeat, repeat;
+    background-color: #cccccc;
+    background-size:contain;
+    background-position: center;
+  }
 
   </style>
   </head>
