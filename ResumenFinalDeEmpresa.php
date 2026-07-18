@@ -856,7 +856,7 @@ foreach ($listaOtrosGastos as $row)
         </tr>-->
         <tr>
           <td> Salarios</td>
-          <td><?php echo "$ ".$contador['Salario']+$contador['Laudo']+$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']+$contador['LaudoNoCobrado']; ?></td>
+          <td><?php echo "$ ".$contador['Salario']+$contador['Laudo']+$contador['LaudoNoCobrado']; ?></td>
         </tr>
         <tr>
           <td> Feriados</td><td><?php echo "$ ".$contador['FeriadoNoCobrado']+$contador['FeriadoCobrado']; ?></td>
