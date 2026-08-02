@@ -78,6 +78,11 @@ $contador['Observaciones']=0;
 $contador['Kilometros']=0;
 $contador['MercPagoPersonal']=0;
 $contador['CabifyTarjetas']=0;
+$contador['UberTarjetas']=0;
+$contador['TransBanc']=0;
+$contador['H13PuntaGorda']=0;
+$contador['H13Scot']=0;
+$contador['H13Carrasco']=0;
 $contador['OtraRetencion']=0;
 $contador['AporteReal']=0;
 $contador['GasOilCred']=0;
@@ -430,6 +435,11 @@ foreach($listarecaudaciones as $row)
   $contador['Tarjetas']=$contador['Tarjetas']+$row['Tarjetas'];
   $contador['MercPagoPersonal']=$contador['MercPagoPersonal']+$row['MercPagoPersonal'];
   $contador['CabifyTarjetas']=$contador['CabifyTarjetas']+$row['CabifyTarjetas'];
+  $contador['UberTarjetas']=$contador['UberTarjetas']+$row['UberTarjetas'];
+  $contador['TransBanc']=$contador['TransBanc']+$row['TransBanc'];
+  $contador['H13PuntaGorda']=$contador['H13PuntaGorda']+$row['H13PuntaGorda'];
+  $contador['H13Scot']=$contador['H13Scot']+$row['H13Scot'];
+  $contador['H13Carrasco']=$contador['H13Carrasco']+$row['H13Carrasco'];
 
   $contador['GasOilPlata']=$contador['GasOilPlata']+$row['GasOilPlata'];
   $contador['GasOilLitros']=$contador['GasOilLitros']+$row['GasOilLitros'];
@@ -461,7 +471,11 @@ if (!empty($listaDeKm)) {
 
 $sumaAceites=$contador['AceiteCont']+$contador['AceiteCred'];
 
-$pagosElecrtonicos=$contador['H13Patronal']+$contador['R12Celeritas']+$contador['MerPagoCeleritas']+$contador['H13Especiales']+$contador['MercPago']+$contador['OcaCel']+$contador['Bits']+$contador['Tarjetas']+$contador['MercPagoPersonal']+$contador['CabifyTarjetas'];
+$pagosElecrtonicos=$contador['H13Patronal']+$contador['R12Celeritas']+$contador['MerPagoCeleritas']
+                  +$contador['H13Especiales']+$contador['MercPago']+$contador['OcaCel']+$contador['Bits']
+                  +$contador['Tarjetas']+$contador['MercPagoPersonal']+$contador['CabifyTarjetas']
+                  +$contador['UberTarjetas']+$contador['TransBanc']+$contador['H13PuntaGorda']
+                  +$contador['H13Scot']+$contador['H13Carrasco'];
 
 $resumenGF=[];
 foreach($ListaGF as $row)
@@ -936,7 +950,7 @@ foreach ($listaOtrosGastos as $row)
             $tempGanaciaNeta= $contador['Recaudado']+$contador['Peajes']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
             //$tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
             //echo "$ ".$contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']); 
-            $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0]-$contador['LaudoNoCobrado'];
+            $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0];
             echo "$ ".round($tempGanaciaNeta,2);
             ?></td>
         </tr>
@@ -983,8 +997,10 @@ foreach ($listaOtrosGastos as $row)
         </tr><?php } if($contador['CabifyTarjetas']>0){ ?>
         <tr>
           <td> Cabify Tarjetas</td><td><?php echo $contador['CabifyTarjetas']; ?></td>
-        </tr>
-        <?php } ?>
+        </tr><?php } if($contador['UberTarjetas']>0){ ?>
+        <tr>
+          <td> Uber Tarjetas</td><td><?php echo $contador['UberTarjetas']; ?></td>
+        </tr><?php }?>
         <tr>
           <td> Descuentos por Pagos electrónicos: </td><td><?php echo $desc[0][0]; ?></td>
         </tr>
