@@ -26,7 +26,7 @@ $movil=$ides;
 
 
 
-$sql = "Select * from recaudaciones where ((HoraEntrada>='$inicio 00:00:00' and  HoraEntrada <= '$fin 23:59:00') or (fecha>='$inicio 00:00:00' and  fecha <= '$fin 23:59:00')) and recaudaciones.MovilId in $ides order by recaudaciones.HoraEntrada;";
+$sql = "Select * from recaudaciones where ((HoraEntrada>='$inicio 00:00:00' and  HoraEntrada <= '$fin 23:59:59') or (fecha>='$inicio 00:00:00' and  fecha <= '$fin 23:59:59')) and recaudaciones.MovilId in $ides order by recaudaciones.HoraEntrada;";
 $sql2 = str_replace("from recaudaciones", "from recaudaciones,bauchers", $sql);
 $sql2 = str_replace("where", "where recaudaciones.id=bauchers.Recaudacion_Id and ", $sql2);
 $sql2 = str_replace("*", "round(sum(bauchers.Descuentos),2)", $sql2);
@@ -948,8 +948,6 @@ foreach ($listaOtrosGastos as $row)
           <td> Ganancia Neta (Beneficio Líquido):</td><td>
             <?php
             $tempGanaciaNeta= $contador['Recaudado']+$contador['Peajes']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-            //$tempGanaciaNeta= $contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-            //echo "$ ".$contador['Recaudado']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']); 
             $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0];
             echo "$ ".round($tempGanaciaNeta,2);
             ?></td>
