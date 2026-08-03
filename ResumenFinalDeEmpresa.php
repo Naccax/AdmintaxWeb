@@ -702,7 +702,6 @@ foreach($listaPA as $row)
   $contadorPA['CabifyTarjetas']=$contadorPA['CabifyTarjetas']+$row['CabifyTarjetas'];
   $contadorPA['OtraRetencion']=$contadorPA['OtraRetencion']+$row['OtraRetencion'];
   $contadorPA['AporteReal']=$contadorPA['AporteReal']+$row['AporteReal'];
-  echo "<br>";
 
 }
 
@@ -947,8 +946,11 @@ foreach ($listaOtrosGastos as $row)
         <tr class="Neutral">
           <td> Ganancia Neta (Beneficio Líquido):</td><td>
             <?php
-            $tempGanaciaNeta= $contador['Recaudado']+$contador['Peajes']-$contador['GasOilCred']-$contador['Gastos']-($contadorGV['Liquido']*(-1))-$contadorGF['Liquido']-($contador['FeriadoNoCobrado']+$contador['ViaticoNoCobrado']);
-            $tempGanaciaNeta=$tempGanaciaNeta-$contador['AceiteCred']-$desc[0][0];
+            // El líquido de los Gastos Variables (GV) se guarda negativo, por eso se suma en vez de restarse
+            // El campo Gastos incluye el Salario y el resto de los otros gastos en boletas
+            $tempGanaciaNeta=$contador['Recaudado']+$contador['Peajes']-$contador['GasOilCred']-$contador['Gastos']
+                            +$contadorGV['Liquido']-$contadorGF['Liquido']-$contador['FeriadoNoCobrado']
+                            -$contador['ViaticoNoCobrado']-$contador['AceiteCred']-$desc[0][0];
             echo "$ ".round($tempGanaciaNeta,2);
             ?></td>
         </tr>
